@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "https://localhost:7095/";  // Remplacez par l'URL de base de votre API
+    private static final String BASE_URL = "https://safespotapi20250207214631.azurewebsites.net/";
     private static Retrofit retrofit;
 
     public static Retrofit getInstance() {

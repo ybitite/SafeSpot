@@ -3,6 +3,7 @@ package ch.y.bitite.safespot.repository;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -32,19 +33,19 @@ public class ReportRepository {
     }
 
     public void fetchValidatedReports() {
-        apiService.getValidatedReports().enqueue(new Callback<AdminResponse>() {
+        apiService.getValidatedReports().enqueue(new Callback<List<ReportValidated>>() { // Changed to List<ReportValidated>
             @Override
-            public void onResponse(Call<AdminResponse> call, Response<AdminResponse> response) {
+            public void onResponse(@NonNull Call<List<ReportValidated>> call, @NonNull Response<List<ReportValidated>> response) { // Changed to List<ReportValidated>
                 if (response.isSuccessful() && response.body() != null) {
                     executorService.execute(() -> {
                         reportDao.deleteAllValidatedReports();
-                        reportDao.insertValidatedReports(response.body().validatedReports);
+                        reportDao.insertValidatedReports(response.body()); // response.body() is now a List<ReportValidated>
                     });
                 }
             }
 
             @Override
-            public void onFailure(Call<AdminResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<ReportValidated>> call, @NonNull Throwable t) { // Changed to List<ReportValidated>
                 Log.e("API_ERROR", "Erreur de chargement des rapports validés", t);
             }
         });
@@ -53,14 +54,14 @@ public class ReportRepository {
     public void addReport(ReportValidated reportValidated) {
         apiService.addReport(reportValidated).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("API_SUCCESS", "Rapport ajouté avec succès !");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "Erreur lors de l'ajout du rapport", t);
             }
         });
