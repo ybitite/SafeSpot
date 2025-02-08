@@ -50,9 +50,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    annotationProcessor("androidx.room:room-compiler:$2.6.1")
     implementation(libs.annotation)
     // To use the Java-compatible @androidx.annotation.OptIn API annotation
     implementation(libs.annotation.experimental)
+
+    // Room dependencies
+    implementation("androidx.room:room-runtime:2.6.1") // Use the latest version
+    annotationProcessor("androidx.room:room-compiler:2.6.1") // Use the same version as room-runtime
 
 }
