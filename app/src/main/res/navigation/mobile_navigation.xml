@@ -2,6 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@+id/navigation_home">
 
     <fragment
@@ -14,6 +15,15 @@
         android:id="@+id/navigation_dashboard"
         android:name="ch.y.bitite.safespot.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_addReportFragment"
+            app:destination="@id/addReportFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addReportFragment"
+        android:name="ch.y.bitite.safespot.ui.dashboard.AddReportFragment"
+        android:label="AddReportFragment" />
 
 </navigation>
