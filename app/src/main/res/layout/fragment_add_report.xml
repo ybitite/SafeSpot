@@ -9,7 +9,7 @@
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/description"
+        android:hint="Description"
         android:inputType="textMultiLine"
         android:minLines="3" />
 
@@ -17,26 +17,28 @@
         android:id="@+id/editTextLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/longitude"
+        android:hint="Longitude"
         android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/editTextLatitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/latitude"
+        android:hint="Latitude"
         android:inputType="numberDecimal" />
 
     <Button
         android:id="@+id/buttonAddReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_report" />
+        android:backgroundTint="#2E7D32"
+        android:text="Add Report" />
 
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cancel" />
+        android:backgroundTint="#D84315"
+        android:text="Cancel" />
 
 </LinearLayout>
