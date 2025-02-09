@@ -13,7 +13,7 @@ import ch.y.bitite.safespot.model.ReportValidated;
 @Dao
 public interface ReportDao {
 
-    @Query("SELECT * FROM reports_validated")
+    @Query("SELECT * FROM reports_validated ORDER BY id DESC")
     LiveData<List<ReportValidated>> getAllValidatedReports();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
