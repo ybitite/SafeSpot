@@ -14,13 +14,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ch.y.bitite.safespot.model.ReportValidated;
+import ch.y.bitite.safespot.repository.Report;
 import ch.y.bitite.safespot.repository.ReportRepository;
+
 
 public class DashboardViewModel extends AndroidViewModel {
     private final ReportRepository repository;
     private final LiveData<List<ReportValidated>> validatedReports;
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private static final long REFRESH_INTERVAL = TimeUnit.SECONDS.toMillis(300); // 300 seconds
+    private final Handler handler =new Handler(Looper.getMainLooper());
+    private static final long REFRESH_INTERVAL = TimeUnit.SECONDS.toMillis(1000); // 300 seconds
     private final Runnable refreshRunnable = new Runnable() {
         @Override
         public void run() {
@@ -56,5 +58,9 @@ public class DashboardViewModel extends AndroidViewModel {
         super.onCleared();
         // Remove callbacks to prevent memoryleaks
         handler.removeCallbacks(refreshRunnable);
+    }
+
+    public void addReport(Report report, ReportRepository.AddReportCallback callback) {
+        repository.addReport(report, callback);
     }
 }
