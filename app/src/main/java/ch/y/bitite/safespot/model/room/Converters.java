@@ -10,20 +10,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Converters {
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-
     @TypeConverter
-    public static String fromDate(Date date) {
-        return date == null ? null : formatter.format(date);
+    public static Date fromTimestamp(Long value) {
+        return value == null ? null : new Date(value);
     }
 
     @TypeConverter
-    public static Date toDate(String dateString) {
-        try {
-            return dateString == null ? null : formatter.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static Long dateToTimestamp(Date date) {
+        return date == null ? null : date.getTime();
     }
 }
