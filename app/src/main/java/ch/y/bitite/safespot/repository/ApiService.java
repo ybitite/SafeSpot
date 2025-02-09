@@ -10,8 +10,8 @@ import retrofit2.http.POST;
 
 public interface ApiService {
     @GET("api/reports")
-    Call<List<ReportValidated>> getValidatedReports(); // Changed to List<ReportValidated>
+    Call<List<ReportValidated>> getValidatedReports();
 
     @POST("api/reports")
-    Call<Void> addReport(@Body ReportValidated newReport);
+    Call<Void> addReport(@Body Report newReport);
 }
