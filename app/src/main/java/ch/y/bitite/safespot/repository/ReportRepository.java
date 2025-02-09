@@ -15,7 +15,6 @@ import ch.y.bitite.safespot.model.room.ReportDao;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class ReportRepository {
     private final ApiService apiService;
     private final ReportDao reportDao;
@@ -33,37 +32,54 @@ public class ReportRepository {
     }
 
     public void fetchValidatedReports() {
-        apiService.getValidatedReports().enqueue(new Callback<List<ReportValidated>>() { // Changed to List<ReportValidated>
+        apiService.getValidatedReports().enqueue(new Callback<List<ReportValidated>>() {
             @Override
-            public void onResponse(@NonNull Call<List<ReportValidated>> call, @NonNull Response<List<ReportValidated>> response) { // Changed to List<ReportValidated>
+            public void onResponse(@NonNull Call<List<ReportValidated>> call, @NonNull Response<List<ReportValidated>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     executorService.execute(() -> {
                         reportDao.deleteAllValidatedReports();
-                        reportDao.insertValidatedReports(response.body()); // response.body() is now a List<ReportValidated>
+                        reportDao.insertValidatedReports(response.body());
                     });
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<ReportValidated>> call, @NonNull Throwable t) { // Changed to List<ReportValidated>
+            public void onFailure(@NonNull Call<List<ReportValidated>> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "Erreur de chargement des rapports validés", t);
             }
         });
     }
 
-    public void addReport(ReportValidated reportValidated) {
-        apiService.addReport(reportValidated).enqueue(new Callback<Void>() {
+    public void addReport(Report report, AddReportCallback callback) {
+        apiService.addReport(report).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("API_SUCCESS", "Rapport ajouté avec succès !");
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                } else {
+                    Log.e("API_ERROR", "Erreur lors de l'ajout du rapport: " + response.code());
+                    if (callback != null) {
+                        callback.onFailure("Erreur lors de l'ajout du rapport: " + response.code());
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "Erreur lors de l'ajout du rapport", t);
+                if (callback != null) {
+                    callback.onFailure("Erreur lors de l'ajout du rapport: " + t.getMessage());
+                }
             }
         });
+    }
+
+    public interface AddReportCallback {
+        void onSuccess();
+
+        void onFailure(String errorMessage);
     }
 }
