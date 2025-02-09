@@ -15,6 +15,7 @@ import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.model.ReportValidated;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
+
     private List<ReportValidated> reports = new ArrayList<>();
 
     public void setReports(List<ReportValidated> reports) {
@@ -25,15 +26,17 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @NonNull
     @Override
     public ReportViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_report, parent, false);
-        return new ReportViewHolder(view);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_report, parent, false);
+        return new ReportViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
-        ReportValidated report = reports.get(position);
-        holder.description.setText(report.description);
-        holder.comment.setText(report.comment);
+        ReportValidated currentReport = reports.get(position);
+        holder.textViewDescription.setText(currentReport.description);
+        holder.textViewLatitude.setText(String.valueOf(currentReport.latitude));
+        holder.textViewLongitude.setText(String.valueOf(currentReport.longitude));
+        holder.textViewDateTime.setText(String.valueOf(currentReport.date_time));
     }
 
     @Override
@@ -42,12 +45,17 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     }
 
     static class ReportViewHolder extends RecyclerView.ViewHolder {
-        TextView description, comment;
+        private final TextView textViewDescription;
+        private final TextView textViewLatitude;
+        private final TextView textViewLongitude;
+        private final TextView textViewDateTime;
 
         public ReportViewHolder(@NonNull View itemView) {
             super(itemView);
-            description = itemView.findViewById(R.id.textDescription);
-            comment = itemView.findViewById(R.id.textComment);
+            textViewDescription = itemView.findViewById(R.id.textViewDescription);
+            textViewLatitude = itemView.findViewById(R.id.textViewLatitude);
+            textViewLongitude = itemView.findViewById(R.id.textViewLongitude);
+            textViewDateTime = itemView.findViewById(R.id.textViewDateTime);
         }
     }
 }
