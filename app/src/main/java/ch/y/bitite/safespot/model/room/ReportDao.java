@@ -12,12 +12,13 @@ import ch.y.bitite.safespot.model.ReportValidated;
 
 @Dao
 public interface ReportDao {
-    @Query("SELECT * FROM validated_reports")
+
+    @Query("SELECT * FROM reports_validated")
     LiveData<List<ReportValidated>> getAllValidatedReports();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertValidatedReports(List<ReportValidated> reports);
 
-    @Query("DELETE FROM validated_reports")
+    @Query("DELETE FROM reports_validated")
     void deleteAllValidatedReports();
 }
