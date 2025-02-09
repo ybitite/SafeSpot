@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- item_report.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- TextView pour la description -->
     <TextView
-        android:id="@+id/textDescription"
-        android:layout_width="match_parent"
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description"
-        android:textSize="16sp"
-        android:textColor="#000000"
-        android:paddingBottom="8dp"/>
+        android:text="Description"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-    <!-- TextView pour les commentaires -->
     <TextView
-        android:id="@+id/textComment"
-        android:layout_width="match_parent"
+        android:id="@+id/textViewLatitude"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/commentaire"
-        android:textSize="14sp"
-        android:textColor="#555555" />
+        android:text="Latitude" />
+
+    <TextView
+        android:id="@+id/textViewLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Longitude" />
+
+    <TextView
+        android:id="@+id/textViewDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date Time" />
 
 </LinearLayout>
