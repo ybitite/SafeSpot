@@ -3,5 +3,10 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="description">Description</string>
-    <string name="commentaire">Commentaire</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="date">date</string>
+    <string name="add_report">Add Report</string>
+    <string name="cancel">Cancel</string>
+    <string name="refresh">Refresh</string>
 </resources>
