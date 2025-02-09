@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity(tableName = "validated_reports")
+@Entity(tableName = "reports_validated")
 public class ReportValidated {
 
     @PrimaryKey(autoGenerate = true)
@@ -14,11 +14,13 @@ public class ReportValidated {
 
     public double longitude;
     public double latitude;
+    public String date_time;
     public String description;
     public String image;
     public String video;
     public String comment;
+    public String date_time_validation;
 
-    public Date date_time; //  compatible avec toutes les versions Android
-    public Date date_time_validation; // Idem
+    public ReportValidated() {
+    }
 }
