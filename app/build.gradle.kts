@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "ch.y.bitite.safespot"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "ch.y.bitite.safespot"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    implementation(libs.android.maps.utils)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
