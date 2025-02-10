@@ -1,7 +1,4 @@
-package ch.y.bitite.safespot.repository;
-
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+package ch.y.bitite.safespot.model;
 
 import com.google.gson.annotations.SerializedName;
 

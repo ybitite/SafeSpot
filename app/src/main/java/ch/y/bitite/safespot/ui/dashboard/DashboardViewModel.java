@@ -7,14 +7,12 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ch.y.bitite.safespot.model.ReportValidated;
-import ch.y.bitite.safespot.repository.Report;
+import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.repository.ReportRepository;
 
 

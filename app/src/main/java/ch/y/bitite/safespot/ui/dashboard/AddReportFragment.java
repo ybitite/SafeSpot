@@ -28,7 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.Date;
 
 import ch.y.bitite.safespot.R;
-import ch.y.bitite.safespot.repository.Report;
+import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.repository.ReportRepository;
 public class AddReportFragment extends Fragment {
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.model.room.AppDatabase;
 import ch.y.bitite.safespot.model.room.ReportDao;
