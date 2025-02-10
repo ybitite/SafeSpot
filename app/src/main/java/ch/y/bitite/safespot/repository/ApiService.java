@@ -2,6 +2,7 @@ package ch.y.bitite.safespot.repository;
 
 import java.util.List;
 
+import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.model.ReportValidated;
 import retrofit2.Call;
 import retrofit2.http.Body;
