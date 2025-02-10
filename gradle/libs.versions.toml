@@ -17,6 +17,7 @@ roomRuntime = "2.6.1"
 retrofit = "2.11.0"
 converterGson = "2.11.0"
 playServicesLocation = "21.3.0"
+playServicesMaps = "19.0.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -36,6 +37,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
