@@ -16,10 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.Date;
-
 import ch.y.bitite.safespot.R;
-import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.repository.ReportRepository;
 import ch.y.bitite.safespot.utils.ButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
@@ -29,12 +26,14 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     private EditText editTextDescription;
     private TextView textViewLatitude;
     private TextView textViewLongitude;
-    private DashboardViewModel dashboardViewModel;
+    private AddReportViewModel addReportViewModel;
     private LocationHelper locationHelper;
     private ButtonHelper buttonHelper;
-    private double latitude;
-    private double longitude;
     private static final String TAG = "AddReportFragment";
+    private boolean isLocationRequested = false;
+    private static final String KEY_DESCRIPTION = "description";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
 
     @Nullable
     @Override
@@ -43,24 +42,42 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
 
         editTextDescription = view.findViewById(R.id.editTextDescription);
         textViewLatitude = view.findViewById(R.id.textViewLatitude);
-        textViewLongitude = view.findViewById(R.id.textViewLongitude);
-
-        dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);locationHelper = new LocationHelper(this, this);
+        textViewLongitude = view.findViewById(R.id.textViewLongitude);addReportViewModel = new ViewModelProvider(this).get(AddReportViewModel.class);
+        locationHelper = new LocationHelper(this, this);
         buttonHelper = new ButtonHelper(this, view, this);
 
-        // Request a fresh, accurate location
-        locationHelper.checkLocationPermissions();
-
+        if (savedInstanceState != null) {
+            editTextDescription.setText(savedInstanceState.getString(KEY_DESCRIPTION));
+            textViewLatitude.setText(savedInstanceState.getString(KEY_LATITUDE));
+            textViewLongitude.setText(savedInstanceState.getString(KEY_LONGITUDE));
+        }
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (!isLocationRequested) {
+            // Request a fresh, accurate location
+            locationHelper.checkLocationPermissions();
+            isLocationRequested = true;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_DESCRIPTION, editTextDescription.getText().toString());
+        outState.putString(KEY_LATITUDE, textViewLatitude.getText().toString());
+        outState.putString(KEY_LONGITUDE, textViewLongitude.getText().toString());
     }
 
     @Override
     public void onLocationResult(LatLng location) {
         if (location != null) {
-            latitude = location.latitude;
-            longitude = location.longitude;
-            Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
-            updateLocationTextViews();
+            addReportViewModel.setLocation(location);
+            Log.d(TAG, "Latitude: " + location.latitude + " Longitude: " + location.longitude);
+            updateLocationTextViews(location);
         } else {
             // Location is null, handle this case (e.g., display a message)
             textViewLatitude.setText("Location Unavailable");
@@ -76,19 +93,10 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
             Toast.makeText(getContext(), "Please fill the description field", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        Report report = new Report();
-        report.description = description;
-        report.longitude = longitude;
-        report.latitude = latitude;
-        report.setDate_time(new Date());
-        report.image = "q";
-        report.video = "1";
-
-        Log.d(TAG, "Report to send: " + report.toString());
-        dashboardViewModel.addReport(report, new ReportRepository.AddReportCallback() {
+        addReportViewModel.setDescription(description);
+        addReportViewModel.addReport(new ReportRepository.AddReportCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(){
                 Toast.makeText(getContext(), "Report added successfully", Toast.LENGTH_SHORT).show();
                 // Navigate back to DashboardFragment
                 getParentFragmentManager().popBackStack();
@@ -101,9 +109,9 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         });
     }
 
-    private void updateLocationTextViews() {
-        textViewLatitude.setText(String.valueOf(latitude));
-        textViewLongitude.setText(String.valueOf(longitude));
+    private void updateLocationTextViews(LatLng location) {
+        textViewLatitude.setText(String.valueOf(location.latitude));
+        textViewLongitude.setText(String.valueOf(location.longitude));
     }
 
     @Override
@@ -119,5 +127,11 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     @Override
     public void onCancelClicked() {
         getParentFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        locationHelper.stopLocationUpdates();
     }
 }
