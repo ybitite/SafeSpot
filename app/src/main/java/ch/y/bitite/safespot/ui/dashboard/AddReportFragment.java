@@ -1,5 +1,7 @@
 package ch.y.bitite.safespot.ui.dashboard;
 
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -38,6 +41,9 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Lock the orientation to portrait when the fragment is created
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         View view = inflater.inflate(R.layout.fragment_add_report, container, false);
 
         editTextDescription = view.findViewById(R.id.editTextDescription);
@@ -96,7 +102,7 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         addReportViewModel.setDescription(description);
         addReportViewModel.addReport(new ReportRepository.AddReportCallback() {
             @Override
-            public void onSuccess(){
+            public void onSuccess() {
                 Toast.makeText(getContext(), "Report added successfully", Toast.LENGTH_SHORT).show();
                 // Navigate back to DashboardFragment
                 getParentFragmentManager().popBackStack();
@@ -133,5 +139,7 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     public void onDestroyView() {
         super.onDestroyView();
         locationHelper.stopLocationUpdates();
+        // Reset the orientation to sensor-based when the fragment is destroyed
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }
