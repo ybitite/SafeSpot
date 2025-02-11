@@ -43,6 +43,6 @@ public class MapHelper {
     }
 
     public void centerMap(LatLng location) {
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
     }
 }
