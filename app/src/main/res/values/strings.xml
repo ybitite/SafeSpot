@@ -9,4 +9,7 @@
     <string name="add_report">Add Report</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
+    <!-- ... autres chaînes de caractères ... -->
+    <string name="map_content_description">Carte des rapports validés</string>
+    <string name="add_report_button_description">Ajouter un nouveau rapport</string>
 </resources>
