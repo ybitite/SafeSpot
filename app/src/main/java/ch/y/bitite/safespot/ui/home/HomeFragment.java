@@ -1,5 +1,10 @@
 package ch.y.bitite.safespot.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -17,13 +23,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import java.util.List;
 
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
+import ch.y.bitite.safespot.model.ReportClusterItem;
 import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.ui.dashboard.DashboardViewModel;
 
@@ -34,6 +46,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     private DashboardViewModel dashboardViewModel;
     private Button buttonAddReport;
+    private ClusterManager<ReportClusterItem> clusterManager;
 
 
     @Override
@@ -43,8 +56,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         View root = binding.getRoot();
 
         mapView = binding.mapView;
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        mapView.onCreate(savedInstanceState);mapView.getMapAsync(this);
 
         buttonAddReport = root.findViewById(R.id.buttonAddReportHome);
         buttonAddReport.setOnClickListener(v -> {
@@ -74,17 +86,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Set initial zoom level and position
         LatLng initialLocation = new LatLng(46.94809, 7.44744);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 13));
+
+        // Initialiser le ClusterManager
+        clusterManager = new ClusterManager<>(requireContext(), googleMap);
+        clusterManager.setRenderer(new ReportRenderer(requireContext(), googleMap, clusterManager));
+        googleMap.setOnCameraIdleListener(clusterManager);
+        googleMap.setOnMarkerClickListener(clusterManager);
+
         dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), this::updateMapMarkers);
     }
 
     private void updateMapMarkers(List<ReportValidated> reports) {
-        googleMap.clear(); // Clear existing markers
+        clusterManager.clearItems();
         for (ReportValidated report : reports) {
-            LatLng location = new LatLng(report.latitude, report.longitude);
-            googleMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .title(report.description));
+            ReportClusterItem item = new ReportClusterItem(report);
+            clusterManager.addItem(item);
         }
+        clusterManager.cluster();
     }
 
     @Override
