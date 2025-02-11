@@ -1,35 +1,30 @@
 package ch.y.bitite.safespot.ui.home;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import java.util.List;
 
@@ -46,8 +41,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     private DashboardViewModel dashboardViewModel;
     private Button buttonAddReport;
+    private Button buttonCenterMap;
     private ClusterManager<ReportClusterItem> clusterManager;
-
+    private FusedLocationProviderClient fusedLocationClient;
+    private ActivityResultLauncher<String[]> locationPermissionRequest;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -56,7 +53,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         View root = binding.getRoot();
 
         mapView = binding.mapView;
-        mapView.onCreate(savedInstanceState);mapView.getMapAsync(this);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
         buttonAddReport = root.findViewById(R.id.buttonAddReportHome);
         buttonAddReport.setOnClickListener(v -> {
@@ -65,7 +63,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     .navigate(R.id.action_homeFragment_to_addReportFragment);
         });
 
+        buttonCenterMap = root.findViewById(R.id.buttonCenterMap);
+        buttonCenterMap.setOnClickListener(v -> {
+            // Center the map on the user's current location
+            getCurrentLocation();
+        });
+
         dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+
+        locationPermissionRequest = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                permissions -> {
+                    if (Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) ||
+                            Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false))) {
+                        // Permission is granted. Continue the action or workflow in your app.
+                        getCurrentLocation();
+                    } else {
+                        // Explain to the user that the feature is unavailable because the
+                        // features requires a permission that the user has denied.
+                    }
+                }
+        );
 
         return root;
     }
@@ -80,8 +100,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap map) {
+    @Override public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
         // Set initial zoom level and position
         LatLng initialLocation = new LatLng(46.94809, 7.44744);
@@ -94,6 +113,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setOnMarkerClickListener(clusterManager);
 
         dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), this::updateMapMarkers);
+
+        // Vérifier et demander les permissions
+        checkLocationPermissions();
     }
 
     private void updateMapMarkers(List<ReportValidated> reports) {
@@ -103,6 +125,34 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             clusterManager.addItem(item);
         }
         clusterManager.cluster();
+    }
+
+    private void checkLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Demander les permissions
+            locationPermissionRequest.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        } else {
+            // Les permissions sont déjà accordées
+            getCurrentLocation();
+        }
+    }
+
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                    }
+                });
     }
 
     @Override
