@@ -58,7 +58,5 @@ public class DashboardViewModel extends AndroidViewModel {
         handler.removeCallbacks(refreshRunnable);
     }
 
-    public void addReport(Report report, ReportRepository.AddReportCallback callback) {
-        repository.addReport(report, callback);
-    }
+
 }
