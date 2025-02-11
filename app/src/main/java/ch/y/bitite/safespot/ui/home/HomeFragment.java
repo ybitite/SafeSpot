@@ -1,6 +1,4 @@
-package ch.y.bitite.safespot.ui.home;
-
-import android.os.Bundle;
+package ch.y.bitite.safespot.ui.home;import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
-import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.ui.dashboard.DashboardViewModel;
 import ch.y.bitite.safespot.utils.ButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
@@ -32,6 +29,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private ButtonHelper buttonHelper;
     private HomeViewModel homeViewModel;
     private DashboardViewModel dashboardViewModel;
+    private boolean isMapReady = false; // Flag to track if the map is ready
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -39,7 +37,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mapView = binding.mapView;
+        mapView =binding.mapView;
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
@@ -56,7 +54,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         homeViewModel.getCurrentLocation().observe(getViewLifecycleOwner(), location -> {
-            if (location != null && mapHelper != null) {
+            if (location != null && mapHelper != null && isMapReady) {
+                // Only center the map if it's ready and a new location is received
                 mapHelper.centerMap(location);
             }
         });
@@ -80,6 +79,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         mapHelper = new MapHelper(requireContext(), googleMap);
         LatLng initialLocation = new LatLng(46.94809, 7.44744);
         mapHelper.initializeMap(initialLocation);
+        isMapReady = true; // Set the flag to true when the map is ready
         locationHelper.checkLocationPermissions();
     }
 
@@ -90,7 +90,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onCenterMapClicked() {
-        locationHelper.checkLocationPermissions();
+        if (isMapReady) {
+            LatLng currentLocation = homeViewModel.getCurrentLocation().getValue();
+            if (currentLocation != null) {
+                mapHelper.centerMap(currentLocation);
+            } else {
+                // If the location is null, requestlocation updates
+                locationHelper.checkLocationPermissions();
+            }
+        }
     }
 
     @Override
