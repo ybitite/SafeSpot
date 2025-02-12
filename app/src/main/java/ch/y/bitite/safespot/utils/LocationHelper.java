@@ -26,6 +26,7 @@ public class LocationHelper {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private com.google.android.gms.location.LocationCallback internalLocationCallback;
+    private final ActivityResultLauncher<String[]> locationPermissionRequest;
 
     public interface LocationCallback {
         void onLocationResult(LatLng location);
@@ -37,6 +38,24 @@ public class LocationHelper {
         this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(fragment.requireContext());
         this.locationRequest = createLocationRequest();
         this.internalLocationCallback = createInternalLocationCallback();
+        this.locationPermissionRequest = fragment.registerForActivityResult(new ActivityResultContracts
+                        .RequestMultiplePermissions(), result -> {
+                    Boolean fineLocationGranted = result.getOrDefault(
+                            Manifest.permission.ACCESS_FINE_LOCATION, false);
+                    Boolean coarseLocationGranted = result.getOrDefault(
+                            Manifest.permission.ACCESS_COARSE_LOCATION, false);
+                    if (fineLocationGranted != null && fineLocationGranted) {
+                        // Preciselocation access granted.
+                        requestLocationUpdates();
+                    } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                        // Only approximate location access granted.
+                        requestLocationUpdates();
+                    } else {
+                        // No location access granted.
+                        externalLocationCallback.onLocationResult(null);
+                    }
+                }
+        );
     }
 
     private LocationRequest createLocationRequest() {
@@ -71,25 +90,6 @@ public class LocationHelper {
     }
 
     private void requestLocationPermission() {
-        ActivityResultLauncher<String[]> locationPermissionRequest =
-                fragment.registerForActivityResult(new ActivityResultContracts
-                                .RequestMultiplePermissions(), result -> {
-                            Boolean fineLocationGranted = result.getOrDefault(
-                                    Manifest.permission.ACCESS_FINE_LOCATION, false);
-                            Boolean coarseLocationGranted = result.getOrDefault(
-                                    Manifest.permission.ACCESS_COARSE_LOCATION, false);
-                            if (fineLocationGranted != null && fineLocationGranted) {
-                                // Preciselocation access granted.
-                                requestLocationUpdates();
-                            } else if (coarseLocationGranted != null && coarseLocationGranted) {
-                                // Only approximate location access granted.
-                                requestLocationUpdates();
-                            } else {
-                                // No location access granted.
-                                externalLocationCallback.onLocationResult(null);
-                            }
-                        }
-                );
         locationPermissionRequest.launch(new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
