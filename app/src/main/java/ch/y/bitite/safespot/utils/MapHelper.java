@@ -33,7 +33,7 @@ public class MapHelper {
 
     public void updateMapMarkers(List<ReportValidated> reports) {
         if (reports != null) {
-            clusterManager.clearItems();
+            clusterManager.clearItems(); // Clear the clusterManager
             for (ReportValidated report : reports) {
                 ReportClusterItem item = new ReportClusterItem(report);
                 clusterManager.addItem(item);
@@ -43,6 +43,6 @@ public class MapHelper {
     }
 
     public void centerMap(LatLng location) {
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
     }
 }

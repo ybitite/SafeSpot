@@ -2,6 +2,7 @@ package ch.y.bitite.safespot.ui.home;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -25,6 +26,7 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private BitmapDescriptor customMarkerIcon;
     private Context context;
+    private final Paint haloPaint; // Paint for the halo
 
     public ReportRenderer(Context context, GoogleMap map, ClusterManager<ReportClusterItem> clusterManager) {
         super(context, map, clusterManager);
@@ -33,24 +35,21 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(30f);
 
-        // Charger l'image personnalisée
-        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.emergency_icon);
+        // Initialize the halo paint
+        haloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        haloPaint.setStyle(Paint.Style.FILL); // Set the style tofill for a filled shape
 
-        // Définir la nouvelle taille souhaitée
+        // Load the custom marker icon
+        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.emergency_icon);
         int newWidth = 80;
         int newHeight = 80;
-
-        // Redimensionner l'image
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, false);
-
-        // Créer le BitmapDescriptor à partir de l'image redimensionnée
         customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     @Override
     protected void onBeforeClusterItemRendered(@NonNull ReportClusterItem item, @NonNull MarkerOptions markerOptions) {
         markerOptions.title(item.getTitle());
-        // Définir l'icône personnalisée pour les éléments individuels
         markerOptions.icon(customMarkerIcon);
     }
 
@@ -75,16 +74,29 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
     }
 
     private BitmapDescriptor createClusterIcon(int clusterSize, int color) {
-        int circleRadius = 40;
-        Bitmap bitmap = Bitmap.createBitmap(circleRadius * 2, circleRadius * 2, Bitmap.Config.ARGB_8888);
+        int circleRadius = 50;
+        int outlineRadius = circleRadius * 2; // Double the radius for the outline
+        int bitmapSize = outlineRadius * 2; // Size of the bitmap to accommodate the outline
+
+        Bitmap bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
+
+        // Draw the transparent halo
+        haloPaint.setColor(color);
+        haloPaint.setAlpha(80); // Set the transparency (0-255, 80 is about 30% transparent)
+        canvas.drawCircle(bitmapSize / 2,bitmapSize / 2, outlineRadius, haloPaint);
+
+        // Draw the inner circle
         Paint paintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintCircle.setColor(color);
-        canvas.drawCircle(circleRadius, circleRadius, circleRadius, paintCircle);
+        canvas.drawCircle(bitmapSize / 2, bitmapSize / 2, circleRadius, paintCircle);
+
+        // Draw the text
         String text = String.valueOf(clusterSize);
-        float textX = circleRadius;
-        float textY = circleRadius - (paint.descent() + paint.ascent()) / 2;
+        float textX = bitmapSize / 2;
+        float textY = bitmapSize / 2 - (paint.descent() + paint.ascent()) / 2;
         canvas.drawText(text, textX, textY, paint);
+
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
