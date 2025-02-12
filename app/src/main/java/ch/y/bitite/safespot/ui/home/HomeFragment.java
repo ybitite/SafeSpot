@@ -46,10 +46,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
-        locationHelper = new LocationHelper(this, this);
         buttonHelper = new ButtonHelper(this, root, this);
 
         return root;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        locationHelper = new LocationHelper(this, this);
     }
 
     @Override
