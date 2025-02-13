@@ -39,7 +39,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         holder.textViewDescription.setText(currentReport.description);
         holder.textViewLatitude.setText(String.valueOf(currentReport.latitude));
         holder.textViewLongitude.setText(String.valueOf(currentReport.longitude));
-        holder.textViewDateTime.setText(String.valueOf(currentReport.date_time));
+        holder.textViewDateTime.setText(String.valueOf(currentReport.date_Time));
 
         // Load the image using Glide
         if (currentReport.image != null && !currentReport.image.isEmpty()) {
