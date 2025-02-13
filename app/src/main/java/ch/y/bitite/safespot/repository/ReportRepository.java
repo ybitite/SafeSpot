@@ -19,6 +19,8 @@ import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.model.room.AppDatabase;
 import ch.y.bitite.safespot.model.room.ReportDao;
+import ch.y.bitite.safespot.network.ApiService;
+import ch.y.bitite.safespot.network.RetrofitClient;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -62,7 +64,6 @@ public class ReportRepository {
             }
         });
     }
-
     public void addReport(Report report, Uri imageUri, AddReportCallback callback) {
         File file = imageUri != null ? getFileFromUri(imageUri) : null;
         RequestBody requestFile = file != null ? RequestBody.create(MediaType.parse("multipart/form-data"), file) : null;
