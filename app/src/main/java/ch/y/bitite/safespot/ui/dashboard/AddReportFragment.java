@@ -1,19 +1,30 @@
 package ch.y.bitite.safespot.ui.dashboard;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -38,6 +49,12 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
 
+    private ImageView imageView;
+    private Uri selectedImageUri;
+    private Button buttonAddImage;
+    private static final int REQUEST_IMAGE_PICK = 100;
+
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,7 +68,14 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         textViewLongitude = view.findViewById(R.id.textViewLongitude);addReportViewModel = new ViewModelProvider(this).get(AddReportViewModel.class);
         locationHelper = new LocationHelper(this, this);
         buttonHelper = new ButtonHelper(this, view, this);
-
+        imageView = view.findViewById(R.id.imageView);
+        buttonAddImage = view.findViewById(R.id.buttonAddImage);
+        buttonAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermissionAndOpenGallery();
+            }
+        });
         if (savedInstanceState != null) {
             editTextDescription.setText(savedInstanceState.getString(KEY_DESCRIPTION));
             textViewLatitude.setText(savedInstanceState.getString(KEY_LATITUDE));
@@ -92,6 +116,29 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         }
     }
 
+
+    private void checkPermissionAndOpenGallery() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_IMAGE_PICK);
+        } else {
+            openGallery();
+        }
+    }
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, REQUEST_IMAGE_PICK);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
+            selectedImageUri = data.getData();
+            imageView.setImageURI(selectedImageUri);
+        }
+    }
+
     private void addReport() {
         String description = editTextDescription.getText().toString();
 
@@ -100,6 +147,7 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
             return;
         }
         addReportViewModel.setDescription(description);
+        addReportViewModel.setImageUri(selectedImageUri); // Pass the image URI to the ViewModel
         addReportViewModel.addReport(new ReportRepository.AddReportCallback() {
             @Override
             public void onSuccess() {
