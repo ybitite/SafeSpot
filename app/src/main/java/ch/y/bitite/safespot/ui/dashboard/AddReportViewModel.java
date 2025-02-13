@@ -1,6 +1,7 @@
 package ch.y.bitite.safespot.ui.dashboard;
 
 import android.app.Application;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -19,6 +20,7 @@ public class AddReportViewModel extends AndroidViewModel {
     private final ReportRepository repository;
     private final MutableLiveData<String> description = new MutableLiveData<>();
     private final MutableLiveData<LatLng> location = new MutableLiveData<>();
+    private final MutableLiveData<Uri> imageUri = new MutableLiveData<>();
 
     public AddReportViewModel(@NonNull Application application) {
         super(application);
@@ -41,6 +43,14 @@ public class AddReportViewModel extends AndroidViewModel {
         location.setValue(newLocation);
     }
 
+    public void setImageUri(Uri uri) {
+        imageUri.setValue(uri);
+    }
+
+    public LiveData<Uri> getImageUri() {
+        return imageUri;
+    }
+
     public void addReport(ReportRepository.AddReportCallback callback) {
         Report report = new Report();
         report.description = description.getValue();
@@ -49,9 +59,9 @@ public class AddReportViewModel extends AndroidViewModel {
             report.latitude = location.getValue().latitude;
         }
         report.setDate_time(new Date());
-        report.image = "q";
+        report.image = imageUri.getValue() != null ? imageUri.getValue().toString() : "";
         report.video = "1";
 
-        repository.addReport(report, callback);
+        repository.addReport(report, imageUri.getValue(), callback);
     }
 }
