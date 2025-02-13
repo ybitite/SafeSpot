@@ -1,4 +1,4 @@
-package ch.y.bitite.safespot.ui.dashboard;
+package ch.y.bitite.safespot.viewmodel;
 
 import android.app.Application;
 import android.os.Handler;
@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ch.y.bitite.safespot.model.ReportValidated;
-import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.repository.ReportRepository;
 
 
