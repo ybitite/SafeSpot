@@ -1,4 +1,4 @@
-package ch.y.bitite.safespot.ui.home;
+package ch.y.bitite.safespot.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
