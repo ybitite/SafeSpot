@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -43,13 +42,12 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation(libs.room.common)
-    implementation(libs.room.runtime)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation(libs.android.maps.utils)
+    implementation(libs.glide)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
