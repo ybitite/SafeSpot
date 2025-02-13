@@ -1,15 +1,10 @@
-package ch.y.bitite.safespot.model.room;
+package ch.y.bitite.safespot.utils;
 
 import androidx.room.TypeConverter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
 
-public class Converters {
+public class DateConverter {
     @TypeConverter
     public static Date fromTimestamp(Long value) {
         return value == null ? null : new Date(value);
