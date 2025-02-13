@@ -1,4 +1,4 @@
-package ch.y.bitite.safespot.ui.dashboard;
+package ch.y.bitite.safespot.viewmodel;
 
 import android.app.Application;
 import android.net.Uri;
