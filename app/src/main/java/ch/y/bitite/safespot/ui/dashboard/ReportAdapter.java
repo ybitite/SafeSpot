@@ -3,10 +3,13 @@ package ch.y.bitite.safespot.ui.dashboard;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,17 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         holder.textViewLatitude.setText(String.valueOf(currentReport.latitude));
         holder.textViewLongitude.setText(String.valueOf(currentReport.longitude));
         holder.textViewDateTime.setText(String.valueOf(currentReport.date_time));
+
+        // Load the image using Glide
+        if (currentReport.image != null && !currentReport.image.isEmpty()) {
+            String imageUrl = "https://safespotapi20250207214631.azurewebsites.net/uploads/" + currentReport.image;
+            Glide.with(holder.itemView.getContext())
+                    .load(imageUrl)
+                    .into(holder.imageViewReport);
+        } else {
+            // If there's no image, you can set a placeholder or clear the ImageView
+            holder.imageViewReport.setImageResource(R.drawable.ic_launcher_foreground); // Replace with your placeholder
+        }
     }
 
     @Override
@@ -49,6 +63,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         private final TextView textViewLatitude;
         private final TextView textViewLongitude;
         private final TextView textViewDateTime;
+        private final ImageView imageViewReport;
 
         public ReportViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,6 +71,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
             textViewLatitude = itemView.findViewById(R.id.textViewLatitude);
             textViewLongitude = itemView.findViewById(R.id.textViewLongitude);
             textViewDateTime = itemView.findViewById(R.id.textViewDateTime);
+            imageViewReport = itemView.findViewById(R.id.imageViewReport);
         }
     }
 }
