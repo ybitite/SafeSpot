@@ -8,7 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -34,6 +32,7 @@ import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.repository.ReportRepository;
 import ch.y.bitite.safespot.utils.ButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
+import ch.y.bitite.safespot.viewmodel.AddReportViewModel;
 
 public class AddReportFragment extends Fragment implements LocationHelper.LocationCallback, ButtonHelper.ButtonCallback {
 
