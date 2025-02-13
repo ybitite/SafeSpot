@@ -1,4 +1,4 @@
-package ch.y.bitite.safespot.repository;
+package ch.y.bitite.safespot.network;
 
 import java.util.List;
 
