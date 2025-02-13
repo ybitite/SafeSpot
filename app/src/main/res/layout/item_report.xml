@@ -31,4 +31,12 @@
         android:layout_height="wrap_content"
         android:text="Date Time" />
 
+    <ImageView
+        android:id="@+id/imageViewReport"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="8dp"
+        android:contentDescription="Report Image" />
+
 </LinearLayout>
