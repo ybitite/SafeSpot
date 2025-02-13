@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
+import java.util.TimeZone;
 
 public class Report {
 
@@ -44,6 +44,7 @@ public class Report {
 
     public void setDate_time(Date date_time) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Explicitly set UTC
         this.date_time = dateFormat.format(date_time);
     }
 }
