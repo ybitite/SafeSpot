@@ -21,6 +21,7 @@ playServicesMaps = "19.0.0"
 androidMapsUtils = "3.10.0"
 glide = "5.0.0-rc01"
 compiler = "5.0.0-rc01"
+loggingInterceptor = "5.0.0-alpha.14"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -44,6 +45,7 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 android-maps-utils = { group = "com.google.maps.android", name = "android-maps-utils", version.ref = "androidMapsUtils" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
