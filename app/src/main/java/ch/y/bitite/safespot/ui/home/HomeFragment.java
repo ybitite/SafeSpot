@@ -14,10 +14,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
-import ch.y.bitite.safespot.ui.dashboard.DashboardViewModel;
+import ch.y.bitite.safespot.viewmodel.DashboardViewModel;
 import ch.y.bitite.safespot.utils.ButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
 import ch.y.bitite.safespot.utils.MapHelper;
+import ch.y.bitite.safespot.viewmodel.HomeViewModel;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, LocationHelper.LocationCallback, ButtonHelper.ButtonCallback {
 
