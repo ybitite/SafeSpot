@@ -1,4 +1,4 @@
-package ch.y.bitite.safespot.ui.dashboard;
+package ch.y.bitite.safespot.ui.addreport;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,29 +19,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import ch.y.bitite.safespot.R;
-import ch.y.bitite.safespot.repository.ReportRepository;
-import ch.y.bitite.safespot.utils.ButtonHelper;
+import ch.y.bitite.safespot.databinding.FragmentAddReportBinding;
+import ch.y.bitite.safespot.utils.buttonhelper.AddReportButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
 import ch.y.bitite.safespot.viewmodel.AddReportViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 
-public class AddReportFragment extends Fragment implements LocationHelper.LocationCallback, ButtonHelper.ButtonCallback {
+/**
+ * Fragment for adding a new report.
+ * This fragment allows the user to enter a description, select an image, and submit a new report.
+ */
+@AndroidEntryPoint
+public class AddReportFragment extends Fragment implements LocationHelper.LocationCallback, AddReportButtonHelper.AddReportButtonCallback {
 
     private EditText editTextDescription;
     private TextView textViewLatitude;
     private TextView textViewLongitude;
-    private AddReportViewModel addReportViewModel;
+    AddReportViewModel addReportViewModel;
     private LocationHelper locationHelper;
-    private ButtonHelper buttonHelper;
+    private AddReportButtonHelper buttonHelper;
     private static final String TAG = "AddReportFragment";
     private boolean isLocationRequested = false;
     private static final String KEY_DESCRIPTION = "description";
@@ -52,29 +61,38 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     private Uri selectedImageUri;
     private Button buttonAddImage;
     private static final int REQUEST_IMAGE_PICK = 100;
+    private FragmentAddReportBinding binding;
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Lock the orientation to portrait when the fragment is created
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        binding = FragmentAddReportBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
-        View view = inflater.inflate(R.layout.fragment_add_report, container, false);
-
-        editTextDescription = view.findViewById(R.id.editTextDescription);
-        textViewLatitude = view.findViewById(R.id.textViewLatitude);
-        textViewLongitude = view.findViewById(R.id.textViewLongitude);addReportViewModel = new ViewModelProvider(this).get(AddReportViewModel.class);
+        editTextDescription = binding.editTextDescription;
+        textViewLatitude = binding.textViewLatitude;
+        textViewLongitude = binding.textViewLongitude;
+        // Remove this line
+        // progressBar = binding.progressBar;
         locationHelper = new LocationHelper(this, this);
-        buttonHelper = new ButtonHelper(this, view, this);
-        imageView = view.findViewById(R.id.imageView);
-        buttonAddImage = view.findViewById(R.id.buttonAddImage);
-        buttonAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkPermissionAndOpenGallery();
-            }
-        });
+        buttonHelper = new AddReportButtonHelper(view, this);
+        buttonHelper.setupAddReportButtonListeners();
+        imageView = binding.imageView;
+        buttonAddImage = binding.buttonAddImage;
+        buttonAddImage.setOnClickListener(v -> checkPermissionAndOpenGallery());
         if (savedInstanceState != null) {
             editTextDescription.setText(savedInstanceState.getString(KEY_DESCRIPTION));
             textViewLatitude.setText(savedInstanceState.getString(KEY_LATITUDE));
@@ -83,9 +101,19 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         return view;
     }
 
+    /**
+     * Called immediately after onCreateView() has returned, but before any saved state has been restored in to the view.
+     *
+     * @param view               The View returned by onCreateView().
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        addReportViewModel = new ViewModelProvider(requireActivity()).get(AddReportViewModel.class);
+
         if (!isLocationRequested) {
             // Request a fresh, accurate location
             locationHelper.checkLocationPermissions();
@@ -93,6 +121,11 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         }
     }
 
+    /**
+     * Called to ask the fragment to save its current dynamic state, so it can later be reconstructed in a new instance of its process is restarted.
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -101,6 +134,11 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         outState.putString(KEY_LONGITUDE, textViewLongitude.getText().toString());
     }
 
+    /**
+     * Called when a new location is available.
+     *
+     * @param location The new location.
+     */
     @Override
     public void onLocationResult(LatLng location) {
         if (location != null) {
@@ -115,7 +153,9 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         }
     }
 
-
+    /**
+     * Checks if the app has permission to access the gallery and opens it if it does.
+     */
     private void checkPermissionAndOpenGallery() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_IMAGE_PICK);
@@ -124,20 +164,19 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         }
     }
 
+    /**
+     * Opens the gallery to select an image.
+     */
     private void openGallery() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, REQUEST_IMAGE_PICK);
+
+        imagePickerLauncher.launch(galleryIntent);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            imageView.setImageURI(selectedImageUri);
-        }
-    }
 
+    /**
+     * Adds a new report.
+     */
     private void addReport() {
         String description = editTextDescription.getText().toString();
 
@@ -147,46 +186,61 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         }
         addReportViewModel.setDescription(description);
         addReportViewModel.setImageUri(selectedImageUri); // Pass the image URI to the ViewModel
-        addReportViewModel.addReport(new ReportRepository.AddReportCallback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(getContext(), "Report added successfully", Toast.LENGTH_SHORT).show();
-                // Navigate back to DashboardFragment
-                getParentFragmentManager().popBackStack();
-            }
 
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(getContext(), "Failed to add report: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        addReportViewModel.setLocation(new LatLng(1.0, 1.0));
+        addReportViewModel.addReport();
+
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_addReportFragement_to_homeFragment);
     }
-
+    /**
+     * Updates the latitude and longitude TextViews with the given location.
+     *
+     * @param location The location to display.
+     */
     private void updateLocationTextViews(LatLng location) {
         textViewLatitude.setText(String.valueOf(location.latitude));
         textViewLongitude.setText(String.valueOf(location.longitude));
     }
 
-    @Override
-    public void onCenterMapClicked() {
-        // Not used in this fragment
-    }
-
+    /**
+     * ActivityResultLauncher for picking an image.
+     */
+    private final ActivityResultLauncher<Intent> imagePickerLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null && data.getData() != null) {
+                                selectedImageUri = data.getData();
+                                imageView.setImageURI(selectedImageUri);
+                            }
+                        }
+                    });
+    /**
+     * Called when the add report button is clicked.
+     */
     @Override
     public void onAddReportClicked() {
         addReport();
     }
 
+    /**
+     * Called when the cancel button is clicked.
+     */
     @Override
     public void onCancelClicked() {
         getParentFragmentManager().popBackStack();
     }
 
+    /**
+     * Called when the view is destroyed.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         locationHelper.stopLocationUpdates();
-        // Reset the orientation to sensor-based when the fragment is destroyed
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        binding = null;
     }
 }
