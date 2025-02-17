@@ -19,9 +19,9 @@ public interface ApiService {
     @POST("api/reports")
     Call<Void> addReport(
             @Part MultipartBody.Part image,
-            @Part("Description") RequestBody description,
-            @Part("Longitude") RequestBody longitude,
-            @Part("Latitude") RequestBody latitude,
-            @Part("Date_Time") RequestBody dateTime
+            @Part("description") RequestBody description,
+            @Part("longitude") RequestBody longitude,
+            @Part("latitude") RequestBody latitude,
+            @Part("date_Time") RequestBody date_Time
     );
 }
