@@ -25,11 +25,9 @@ public class MapHelper {
         clusterManager = new ClusterManager<>(context, googleMap);
         clusterManager.setRenderer(new ReportRenderer(context, googleMap, clusterManager));
         googleMap.setOnCameraIdleListener(clusterManager);
-        googleMap.setOnMarkerClickListener(clusterManager);}
-
-    public void initializeMap(LatLng initialLocation) {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 13));
+        googleMap.setOnMarkerClickListener(clusterManager);
     }
+
 
     public void updateMapMarkers(List<ReportValidated> reports) {
         if (reports != null) {
