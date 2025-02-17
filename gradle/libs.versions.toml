@@ -22,6 +22,10 @@ androidMapsUtils = "3.10.0"
 glide = "5.0.0-rc01"
 compiler = "5.0.0-rc01"
 loggingInterceptor = "5.0.0-alpha.14"
+hiltAndroid = "2.55"
+hiltCompiler = "2.55"
+rxjava = "3.1.10"
+rxandroid = "3.0.2"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -46,6 +50,10 @@ android-maps-utils = { group = "com.google.maps.android", name = "android-maps-u
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltCompiler" }
+rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
+rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
