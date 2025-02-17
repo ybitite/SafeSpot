@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -8,12 +9,14 @@ android {
 
     defaultConfig {
         applicationId = "ch.y.bitite.safespot"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BASE_URL", "\"https://safespotapi20250207214631.azurewebsites.net/\"")
+        android.buildFeatures.buildConfig = true
     }
 
     buildTypes {
@@ -32,6 +35,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    // Add the packagingOptions block here
+    packaging {
+        resources {
+            exclude("META-INF/gradle/incremental.annotation.processors")
+        }
+    }
 }
 
 dependencies {
@@ -49,6 +58,10 @@ dependencies {
     implementation(libs.android.maps.utils)
     implementation(libs.glide)
     implementation(libs.logging.interceptor)
+    implementation(libs.hilt.android)
+    annotationProcessor(libs.hilt.compiler) // Utiliser annotationProcessor au lieu de kapt
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -58,6 +71,6 @@ dependencies {
 
     // Room dependencies
     implementation("androidx.room:room-runtime:2.6.1") // Use the latest version
-    annotationProcessor("androidx.room:room-compiler:2.6.1") // Use the same version as room-runtime
+    annotationProcessor("androidx.room:room-compiler:2.6.1") // Utiliser annotationProcessor au lieu de kapt
 
 }
