@@ -10,24 +10,56 @@ import java.util.TimeZone;
 public class Report {
 
     @SerializedName("Longitude")
-    public double longitude;
+    private final double longitude;
 
     @SerializedName("Latitude")
-    public double latitude;
+    private final double latitude;
 
     @SerializedName("Date_Time")
-    public String date_time;
+    private final String dateTimeUtc;
 
     @SerializedName("Description")
-    public String description;
+    private final String description;
 
     @SerializedName("Image")
-    public String image;
+    private final String image;
 
     @SerializedName("Video")
-    public String video;
+    private final String video;
 
-    public Report() {
+    public Report(double longitude, double latitude, Date dateTime, String description, String image, String video) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Explicitly set UTC
+        this.dateTimeUtc = dateFormat.format(dateTime);
+        this.description = description;
+        this.image = image;
+        this.video = video;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public String getDateTimeUtc() {
+        return dateTimeUtc;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getVideo() {
+        return video;
     }
 
     @Override
@@ -35,16 +67,10 @@ public class Report {
         return "Report{" +
                 "longitude=" + longitude +
                 ", latitude=" + latitude +
-                ", date_time='" + date_time + '\'' +
+                ", dateTimeUtc='" + dateTimeUtc + '\'' +
                 ", description='" + description + '\'' +
                 ", image='" + image + '\'' +
                 ", video='" + video + '\'' +
                 '}';
-    }
-
-    public void setDate_time(Date date_time) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Explicitly set UTC
-        this.date_time = dateFormat.format(date_time);
     }
 }
