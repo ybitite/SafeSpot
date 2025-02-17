@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/homeFragment">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/homeFragment"
         android:name="ch.y.bitite.safespot.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
@@ -16,7 +16,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/dashboardFragment"
         android:name="ch.y.bitite.safespot.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard">
@@ -27,7 +27,11 @@
 
     <fragment
         android:id="@+id/addReportFragment"
-        android:name="ch.y.bitite.safespot.ui.dashboard.AddReportFragment"
-        android:label="AddReportFragment" />
+        android:name="ch.y.bitite.safespot.ui.addreport.AddReportFragment"
+        android:label="AddReportFragment" >
+        <action
+            android:id="@+id/action_addReportFragement_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
 </navigation>
