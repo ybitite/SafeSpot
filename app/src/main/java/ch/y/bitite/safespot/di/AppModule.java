@@ -22,4 +22,16 @@ public class AppModule {
     public RequestManager provideGlide(@ApplicationContext Context context) {
         return Glide.with(context);
     }
+
+    /**
+     * Provides the application context.
+     *
+     * @param context The application context.
+     * @return The application context.
+     */
+    @Provides
+    @Singleton
+    public Context provideContext(@ApplicationContext Context context) {
+        return context;
+    }
 }
