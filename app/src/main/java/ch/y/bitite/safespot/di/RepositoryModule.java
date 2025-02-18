@@ -56,7 +56,12 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public ReportRepository provideReportRepository(ReportLocalDataSource localDataSource, ReportRemoteDataSource remoteDataSource, ReportFileDataSource fileDataSource) {
-        return new ReportRepository(localDataSource, remoteDataSource, fileDataSource);
+    public ReportRepository provideReportRepository(
+            ReportLocalDataSource localDataSource,
+            ReportRemoteDataSource remoteDataSource,
+            ReportFileDataSource fileDataSource,
+            @ApplicationContext Context context // Add this line
+    ) {
+        return new ReportRepository(localDataSource, remoteDataSource, fileDataSource, context); // Add context here
     }
 }
