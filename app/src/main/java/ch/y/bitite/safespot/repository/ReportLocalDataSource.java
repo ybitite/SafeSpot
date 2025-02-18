@@ -95,13 +95,4 @@ public class ReportLocalDataSource {
             }
         });
     }
-
-    /**
-     * Deletes all validated reports from the local database.
-     */
-    public void deleteAllValidatedReports() {
-        executorService.execute(() -> {
-            reportDao.deleteAllValidatedReports();
-        });
-    }
 }
