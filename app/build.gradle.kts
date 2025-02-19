@@ -16,6 +16,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://safespotapi20250207214631.azurewebsites.net/\"")
+        buildConfigField("String", "BASE_URL_IMAGES", "\"https://safespotapi20250207214631.azurewebsites.net/uploads/\"")
         android.buildFeatures.buildConfig = true
     }
 
