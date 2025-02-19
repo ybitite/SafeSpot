@@ -78,6 +78,6 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
 
     @Override
     public void onRefreshClicked() {
-        dashboardViewModel.refreshValidatedReports();
+        dashboardViewModel.fetchValidatedReports();
     }
 }
