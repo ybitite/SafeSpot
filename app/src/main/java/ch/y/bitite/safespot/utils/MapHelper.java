@@ -57,7 +57,7 @@ public class MapHelper {
         // When a cluster is clicked, we log the event and return false.
         // Returning false allows the default behavior (zooming in on the cluster) to occur.
         clusterManager.setOnClusterClickListener(cluster -> {
-            return false; // Allow the default behavior (zoom on the cluster).
+            return true; // Allow the default behavior (zoom on the cluster).
         });
 
         // Set the ClusterManager as the listener for marker clicks.
