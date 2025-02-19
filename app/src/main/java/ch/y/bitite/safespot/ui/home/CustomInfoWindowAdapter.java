@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -17,8 +18,10 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final ImageLoader imageLoader;
     private View infoWindowView;
+    private final Context context;
 
     public CustomInfoWindowAdapter(Context context) {
+        this.context = context;
         this.imageLoader = new ImageLoader(context);
         this.infoWindowView = LayoutInflater.from(context).inflate(R.layout.info_window_layout, null);
     }
@@ -36,11 +39,12 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         // Set the data to the views
         if (reportClusterItem != null) {
-            // Load the image from the URL
-            imageLoader.loadImage(reportClusterItem.getImageFileName(), imageView);
             titleTextView.setText(reportClusterItem.getTitle());
             snippetTextView.setText(reportClusterItem.getSnippet());
             dateTextView.setText(reportClusterItem.getDate());
+            // Load the image from the URL
+            imageLoader.loadImage(reportClusterItem.getImageFileName(), imageView);
+
         }
 
         return infoWindowView;
