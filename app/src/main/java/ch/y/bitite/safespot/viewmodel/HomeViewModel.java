@@ -67,10 +67,13 @@ public class HomeViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(String errorMessage) {
-                isLoading.setValue(false);
-                HomeViewModel.this.errorMessage.setValue(errorMessage);
-                Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
+            public void onFailure(String errorMsg) {
+                if (!repository.isFirstFetch()){
+                    isLoading.setValue(false);
+                    errorMessage.setValue(errorMsg);
+                    Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
+                }
+
             }
         });
     }
