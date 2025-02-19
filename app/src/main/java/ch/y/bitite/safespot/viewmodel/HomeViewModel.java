@@ -38,10 +38,8 @@ public class HomeViewModel extends ViewModel {
     @Inject
     public HomeViewModel(ReportRepository repository) {
         this.repository = repository;
-        // Observe changes in the local database
-        repository.getAllValidatedReports().observeForever(reports -> {
-            validatedReports.setValue(reports);
-        });
+
+        fetchValidatedReports();
     }
 
     /**
@@ -61,6 +59,7 @@ public class HomeViewModel extends ViewModel {
         repository.fetchValidatedReports(new ReportRepository.FetchValidatedReportsCallback() {
             @Override
             public void onSuccess(List<ReportValidated> reports) {
+                validatedReports.setValue(reports);
                 isLoading.setValue(false);
                 errorMessage.setValue(null);
                 Log.d(TAG, "fetchValidatedReports onSuccess");
