@@ -1,13 +1,11 @@
 package ch.y.bitite.safespot.ui.home;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -21,10 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
@@ -33,7 +28,6 @@ import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
 import ch.y.bitite.safespot.model.ReportClusterItem;
 import ch.y.bitite.safespot.model.ReportValidated;
-import ch.y.bitite.safespot.utils.ImageLoader;
 import ch.y.bitite.safespot.utils.buttonhelper.HomeButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
 import ch.y.bitite.safespot.viewmodel.AddReportViewModel;
@@ -47,7 +41,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private MapView mapView;
     private GoogleMap googleMap;
     private LocationHelper locationHelper;
-    private HomeButtonHelper buttonHelper;
     private ProgressBar progressBar;
     private HomeViewModel homeViewModel;
     private AddReportViewModel addReportViewModel;
@@ -65,16 +58,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        progressBar = binding.progressBar;
+
+
         mapView = binding.mapView;
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        buttonHelper = new HomeButtonHelper(root, this);
+        HomeButtonHelper buttonHelper = new HomeButtonHelper(root, this);
         buttonHelper.setupHomeButtonListeners(this);
 
         locationHelper = new LocationHelper(this, this);
         // Initialize the customInfoWindowAdapter here
         customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
+
+
 
         return root;
     }
