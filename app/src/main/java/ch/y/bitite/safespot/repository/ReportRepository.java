@@ -31,6 +31,9 @@ public class ReportRepository {
     private final ReportFileDataSource fileDataSource;
     private final MediatorLiveData<List<ReportValidated>> mediatorLiveData = new MediatorLiveData<>();
     private boolean isDatabaseEmpty;
+
+
+
     private boolean isFirstFetch = true;
     private final SharedPreferences sharedPreferences;
 
@@ -44,6 +47,7 @@ public class ReportRepository {
      */
     @Inject
     public ReportRepository(ReportLocalDataSource localDataSource, ReportRemoteDataSource remoteDataSource, ReportFileDataSource fileDataSource, Context context) {
+
         this.localDataSource = localDataSource;
         this.remoteDataSource = remoteDataSource;
         this.fileDataSource = fileDataSource;
@@ -79,6 +83,7 @@ public class ReportRepository {
      * Fetches validated reports from the API and updates the local database.
      */
     public void fetchValidatedReports(FetchValidatedReportsCallback callback) {
+
         remoteDataSource.fetchValidatedReports(new ReportRemoteDataSource.FetchValidatedReportsCallback() {
             @Override
             public void onSuccess(List<ReportValidated> reports) {
@@ -122,7 +127,9 @@ public class ReportRepository {
             }
         });
     }
-
+    public boolean isFirstFetch() {
+        return isFirstFetch;
+    }
     public interface FetchValidatedReportsCallback {
         void onSuccess(List<ReportValidated> reports);
 
