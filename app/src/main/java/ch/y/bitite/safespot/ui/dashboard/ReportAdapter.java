@@ -8,25 +8,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
-
 import java.util.List;
 
 import javax.inject.Inject;
 
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.model.ReportValidated;
+import ch.y.bitite.safespot.utils.ImageLoader;
 import dagger.hilt.android.scopes.FragmentScoped;
 
 @FragmentScoped
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
 
     private List<ReportValidated> reports;
-    private final RequestManager glide;
+    private final ImageLoader imageLoader;
 
     @Inject
-    public ReportAdapter(RequestManager glide) {
-        this.glide = glide;
+    public ReportAdapter(ImageLoader imageLoader) {
+        this.imageLoader = imageLoader;
     }
 
     public void updateReports(List<ReportValidated> reports) {
@@ -49,11 +48,9 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         holder.textViewLongitude.setText(String.valueOf(currentReport.getLongitude()));
         holder.textViewDateTime.setText(String.valueOf(currentReport.getDateTimeString()));
 
-        // Load the image using Glide
+        // Load the image using ImageLoader
         if (currentReport.getImage() != null && !currentReport.getImage().isEmpty()) {
-            String imageUrl = "https://safespotapi20250207214631.azurewebsites.net/uploads/" + currentReport.getImage();
-            glide.load(imageUrl)
-                    .into(holder.imageViewReport);
+            imageLoader.loadImage(currentReport.getImage(), holder.imageViewReport);
         } else {
             // If there's no image, you can set a placeholder or clear the ImageView
             holder.imageViewReport.setImageResource(R.drawable.image_not_found);
