@@ -28,10 +28,16 @@ import ch.y.bitite.safespot.model.ReportClusterItem;
  */
 public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
     private static final String TAG = "ReportRenderer";
+    private static final int MARKER_SIZE = 150;
+    private static final int CLUSTER_RADIUS = 50;
+    private static final int CLUSTER_OUTLINE_RADIUS = CLUSTER_RADIUS * 2;
+    private static final int CLUSTER_SIZE = CLUSTER_OUTLINE_RADIUS * 2;
+    private static final int HALO_ALPHA = 80;
+    private static final int TEXT_SIZE = 30;
 
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint clusterTextPaint;
     private final BitmapDescriptor customMarkerIcon;
-    private final Paint haloPaint;
+    private final Paint clusterHaloPaint;
     private final Context context;
 
     /**
@@ -46,17 +52,18 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
         this.context = context;
 
         // Initialize the paint for the text in the clusters.
-        paint.setColor(Color.WHITE);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(30f);
+        clusterTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        clusterTextPaint.setColor(Color.WHITE);
+        clusterTextPaint.setTextAlign(Paint.Align.CENTER);
+        clusterTextPaint.setTextSize(TEXT_SIZE);
 
         // Initialize the paint for the halo around the clusters.
-        haloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        haloPaint.setStyle(Paint.Style.FILL);
+        clusterHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        clusterHaloPaint.setStyle(Paint.Style.FILL);
 
         // Load the custom icon for individual markers.
         Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.emergency_icon);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 80, 80, false);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MARKER_SIZE, MARKER_SIZE, false);
         customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
@@ -69,9 +76,6 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
     @Override
     protected void onBeforeClusterItemRendered(@NonNull ReportClusterItem item, @NonNull MarkerOptions markerOptions) {
         Log.d(TAG, "onBeforeClusterItemRendered: Rendering a single item");
-        markerOptions.title(item.getTitle());
-        markerOptions.snippet(item.getSnippet());
-        // We no longer set the icon here because we do it in onClusterItemRendered
     }
 
     /**
@@ -85,6 +89,8 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
         super.onClusterItemRendered(clusterItem, marker);
         // We set the icon here to make sure it is properly set
         marker.setIcon(customMarkerIcon);
+        // Set the ReportClusterItem as the tag of the marker
+        marker.setTag(clusterItem);
     }
 
     /**
@@ -122,28 +128,25 @@ public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
      */
     private BitmapDescriptor createClusterIcon(int clusterSize, int color) {
         Log.d(TAG, "createClusterIcon: Creating cluster icon for size: " + clusterSize);
-        int radius = 50;
-        int outlineRadius = radius * 2;
-        int size = outlineRadius * 2;
 
-        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(CLUSTER_SIZE, CLUSTER_SIZE, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         // Draw the transparent halo.
-        haloPaint.setColor(color);
-        haloPaint.setAlpha(80);
-        canvas.drawCircle(size / 2, size / 2, outlineRadius, haloPaint);
+        clusterHaloPaint.setColor(color);
+        clusterHaloPaint.setAlpha(HALO_ALPHA);
+        canvas.drawCircle(CLUSTER_SIZE / 2, CLUSTER_SIZE / 2, CLUSTER_OUTLINE_RADIUS, clusterHaloPaint);
 
         // Draw the inner circle.
         Paint paintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintCircle.setColor(color);
-        canvas.drawCircle(size / 2, size / 2, radius, paintCircle);
+        canvas.drawCircle(CLUSTER_SIZE / 2, CLUSTER_SIZE / 2, CLUSTER_RADIUS, paintCircle);
 
         // Draw the text (cluster size).
         String text = String.valueOf(clusterSize);
-        float textX = size / 2;
-        float textY = size / 2 - (paint.descent() + paint.ascent()) / 2;
-        canvas.drawText(text, textX, textY, paint);
+        float textX = CLUSTER_SIZE / 2;
+        float textY = CLUSTER_SIZE / 2 - (clusterTextPaint.descent() + clusterTextPaint.ascent()) / 2;
+        canvas.drawText(text, textX, textY, clusterTextPaint);
 
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
