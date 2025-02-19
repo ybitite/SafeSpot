@@ -23,7 +23,7 @@ public class HomeButtonHelper {
         buttonCenterMap = root.findViewById(R.id.buttonCenterMap);
     }
 
-    public void setupHomeButtonListeners(HomeFragment homeFragment) {
+    public void setupHomeButtonListeners() {
         buttonAddReportHome.setOnClickListener(v -> {
             homeButtonCallback.onAddReportClicked();
         });

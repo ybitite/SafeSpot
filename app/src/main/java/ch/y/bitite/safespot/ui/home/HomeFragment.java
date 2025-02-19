@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         mapView.getMapAsync(this);
 
         HomeButtonHelper buttonHelper = new HomeButtonHelper(root, this);
-        buttonHelper.setupHomeButtonListeners(this);
+        buttonHelper.setupHomeButtonListeners();
 
         locationHelper = new LocationHelper(this, this);
         // Initialize the customInfoWindowAdapter here
