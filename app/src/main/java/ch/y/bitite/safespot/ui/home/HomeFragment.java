@@ -87,34 +87,26 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         progressBar = binding.progressBar;
 
         homeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            Log.d("HomeFragment", "isLoading changed: " + isLoading);
+            Log.d("homeViewModel", "isLoading changed: " + isLoading);
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         });
 
         homeViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
-                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
         homeViewModel.fetchValidatedReports();
 
-        addReportViewModel.getGlobalReportState().observe(getViewLifecycleOwner(), globalReportState -> {
-            Log.d("HomeFragment", "globalReportState changed: " + globalReportState);
-            switch (globalReportState) {
-                case LOADING:
-                    progressBar.setVisibility(View.VISIBLE);
-                    break;
-                case SUCCESS:
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Report added successfully", Toast.LENGTH_SHORT).show();
-                    break;
-                case FAILURE:
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Failed to add report", Toast.LENGTH_SHORT).show();
-                    break;
-                case IDLE:
-                    break;
+        addReportViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            Log.d("addReportViewModel", "isLoading changed: " + isLoading);
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        });
+
+        addReportViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
