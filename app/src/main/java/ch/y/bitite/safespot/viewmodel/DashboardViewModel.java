@@ -42,7 +42,7 @@ public class DashboardViewModel extends ViewModel {
         this.repository = repository;
         //validatedReports = repository.getAllValidatedReports();
         // Fetch reports immediately
-        refreshValidatedReports();
+        fetchValidatedReports();
         // Start the periodic refresh
         startPeriodicRefresh();
     }
@@ -60,7 +60,7 @@ public class DashboardViewModel extends ViewModel {
     /**
      * Refreshes the validated reports from the API.
      */
-    public void refreshValidatedReports() {
+    public void fetchValidatedReports() {
 
         repository.fetchValidatedReports(new ReportRepository.FetchValidatedReportsCallback() {
             @Override
@@ -83,7 +83,7 @@ public class DashboardViewModel extends ViewModel {
         Disposable disposable = Observable.interval(REFRESH_INTERVAL, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tick -> refreshValidatedReports());
+                .subscribe(tick -> fetchValidatedReports());
         disposables.add(disposable);
     }
 
