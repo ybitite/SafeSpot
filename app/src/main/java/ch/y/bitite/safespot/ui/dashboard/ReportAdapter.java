@@ -49,12 +49,8 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         holder.textViewDateTime.setText(String.valueOf(currentReport.getDateTimeString()));
 
         // Load the image using ImageLoader
-        if (currentReport.getImage() != null && !currentReport.getImage().isEmpty()) {
-            imageLoader.loadImage(currentReport.getImage(), holder.imageViewReport);
-        } else {
-            // If there's no image, you can set a placeholder or clear the ImageView
-            holder.imageViewReport.setImageResource(R.drawable.image_not_found);
-        }
+        imageLoader.loadImage(currentReport.getImage(), holder.imageViewReport);
+
     }
 
     @Override
