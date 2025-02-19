@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -24,13 +25,15 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
 
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
+import ch.y.bitite.safespot.model.ReportClusterItem;
 import ch.y.bitite.safespot.model.ReportValidated;
+import ch.y.bitite.safespot.utils.ImageLoader;
 import ch.y.bitite.safespot.utils.buttonhelper.HomeButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
 import ch.y.bitite.safespot.viewmodel.AddReportViewModel;
@@ -51,8 +54,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private boolean isMapReady = false;
     private CustomInfoWindowAdapter customInfoWindowAdapter;
 
-    private static final int MARKER_SIZE = 200;
-    private  BitmapDescriptor customMarkerIcon;
+
+
+    private ClusterManager<ReportClusterItem> mClusterManager;
+
 
 
     @Override
@@ -68,6 +73,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         buttonHelper.setupHomeButtonListeners(this);
 
         locationHelper = new LocationHelper(this, this);
+        // Initialize the customInfoWindowAdapter here
+        customInfoWindowAdapter = new CustomInfoWindowAdapter(getContext());
 
         return root;
     }
@@ -121,15 +128,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         Log.d("HomeFragment", "onMapReady");
         googleMap = map;
 
-        // Initialize the CustomInfoWindowAdapter
-        customInfoWindowAdapter = new CustomInfoWindowAdapter(requireContext());
+        mClusterManager = new ClusterManager<>(getContext(), googleMap);
 
-        // Set the info window adapter for the GoogleMap
-        googleMap.setInfoWindowAdapter(customInfoWindowAdapter);
+        // Set the custom renderer
+        ReportClusterItemRenderer renderer = new ReportClusterItemRenderer(getContext(), googleMap, mClusterManager);
+        mClusterManager.setRenderer(renderer);
+        googleMap.setOnCameraIdleListener(mClusterManager);
+
+        // Set the custom InfoWindowAdapter to the ClusterManager
+        mClusterManager.getMarkerCollection().setInfoWindowAdapter(customInfoWindowAdapter);
+
+        mClusterManager.setOnClusterItemInfoWindowClickListener(marker ->
+                Toast.makeText(getContext(),
+                        "Info window clicked.",
+                        Toast.LENGTH_SHORT).show());
+        mClusterManager.setOnClusterItemInfoWindowLongClickListener(marker ->
+                Toast.makeText(getContext(),
+                        "Info window long pressed.",
+                        Toast.LENGTH_SHORT).show());
+
 
         LatLng initialLocation = new LatLng(46.94809, 7.44744);
         centerMap(initialLocation);
-        isMapReady = true;
         locationHelper.checkLocationPermissions();
 
         List<ReportValidated> reports = homeViewModel.getValidatedReports().getValue();
@@ -148,32 +168,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 updateMapMarkers(reports2);
             }
         });
+        isMapReady = true;
     }
 
     private void updateMapMarkers(List<ReportValidated> reports) {
-        Log.d("HomeFragment", "updateMapMarkers: Updating map markers");
-        googleMap.clear();
+
+        mClusterManager.clearItems();
         for (ReportValidated report : reports) {
-
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(new LatLng(report.getLatitude(), report.getLongitude()));
-            Marker marker = googleMap.addMarker(markerOptions);
-            assert marker != null;
-            marker.setTag(report);
-
-            setMarkerIcon(marker);
-
+            // Use ReportClusterItem to wrap the ReportValidated object
+            mClusterManager.addItem(new ReportClusterItem(report));
         }
+        mClusterManager.cluster();
     }
 
-    private void setMarkerIcon(Marker marker) {
-        // Load the custom icon for individual markers.
-        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.emergency_icon);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MARKER_SIZE, MARKER_SIZE, false);
-        customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
-        // We set the icon here to make sure it is properly set
-        marker.setIcon(customMarkerIcon);
-    }
 
     private void centerMap(LatLng location) {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
@@ -219,7 +226,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onLowMemory() {
-        Log.d("HomeFragment", "onLowMemory");
+        Log.d("HomeFragment","onLowMemory");
         super.onLowMemory();
         mapView.onLowMemory();
     }
