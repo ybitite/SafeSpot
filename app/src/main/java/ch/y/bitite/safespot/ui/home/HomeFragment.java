@@ -1,5 +1,7 @@
 package ch.y.bitite.safespot.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,24 +16,27 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
+import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.utils.buttonhelper.HomeButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
-import ch.y.bitite.safespot.utils.MapHelper;
 import ch.y.bitite.safespot.viewmodel.AddReportViewModel;
 import ch.y.bitite.safespot.viewmodel.HomeViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
-/**
- * Fragment for the home screen.
- * This fragment displays a map and markers for validated reports.
- */
 @AndroidEntryPoint
 public class HomeFragment extends Fragment implements OnMapReadyCallback, LocationHelper.LocationCallback, HomeButtonHelper.HomeButtonCallback {
 
@@ -39,16 +44,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private MapView mapView;
     private GoogleMap googleMap;
     private LocationHelper locationHelper;
-    private MapHelper mapHelper;
     private HomeButtonHelper buttonHelper;
     private ProgressBar progressBar;
     private HomeViewModel homeViewModel;
     private AddReportViewModel addReportViewModel;
-    private boolean isMapReady = false; // Flag to track if the map is ready
+    private boolean isMapReady = false;
+    private CustomInfoWindowAdapter customInfoWindowAdapter;
+
+    private static final int MARKER_SIZE = 200;
+    private  BitmapDescriptor customMarkerIcon;
+
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -71,26 +79,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         addReportViewModel = new ViewModelProvider(requireActivity()).get(AddReportViewModel.class);
 
-        // Initialize the ProgressBar
         progressBar = binding.progressBar;
 
-        // Observe the loading state
         homeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             Log.d("HomeFragment", "isLoading changed: " + isLoading);
-            if (isLoading) {
-                progressBar.setVisibility(View.VISIBLE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-            }
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         });
-        // Observe the error message
+
         homeViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
 
-        // Trigger an initial fetch of reports
         homeViewModel.fetchValidatedReports();
 
         addReportViewModel.getGlobalReportState().observe(getViewLifecycleOwner(), globalReportState -> {
@@ -111,33 +112,70 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     break;
             }
         });
+
+
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
         Log.d("HomeFragment", "onMapReady");
         googleMap = map;
-        mapHelper = new MapHelper(requireContext(), googleMap);
+
+        // Initialize the CustomInfoWindowAdapter
+        customInfoWindowAdapter = new CustomInfoWindowAdapter(requireContext());
+
+        // Set the info window adapter for the GoogleMap
+        googleMap.setInfoWindowAdapter(customInfoWindowAdapter);
+
         LatLng initialLocation = new LatLng(46.94809, 7.44744);
-        mapHelper.centerMap(initialLocation);
-        isMapReady = true; // Set the flag to true when the map is ready
+        centerMap(initialLocation);
+        isMapReady = true;
         locationHelper.checkLocationPermissions();
 
+        List<ReportValidated> reports = homeViewModel.getValidatedReports().getValue();
+        if (reports != null) {
+            updateMapMarkers(reports);
+        }
 
         homeViewModel.getCurrentLocation().observe(getViewLifecycleOwner(), location -> {
-            if (location != null && mapHelper != null && isMapReady) {
-                // Only center the map if it's ready and a new location is received
-                mapHelper.centerMap(location);
+            if (location != null && isMapReady) {
+                centerMap(location);
             }
         });
 
-        homeViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> {
+        homeViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports2 -> {
             Log.d("HomeFragment", "getValidatedReports.observe");
-            if (googleMap != null) {
-                mapHelper.updateMapMarkers(reports);
+            if (isMapReady) {
+                updateMapMarkers(reports2);
             }
         });
+    }
 
+    private void updateMapMarkers(List<ReportValidated> reports) {
+        Log.d("HomeFragment", "updateMapMarkers: Updating map markers");
+        googleMap.clear();
+        for (ReportValidated report : reports) {
+            Log.d("HomeFragment", "Report title: " + report.getDescription());
+            Log.d("HomeFragment", "Report description: " + report.getDescription());
+            Log.d("HomeFragment", "Report imagePath: " + report.getImage());
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(new LatLng(report.getLatitude(), report.getLongitude()));
+            Marker marker = googleMap.addMarker(markerOptions);
+            assert marker != null;
+            marker.setTag(report);
+
+            // Load the custom icon for individual markers.
+            Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.emergency_icon);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MARKER_SIZE, MARKER_SIZE, false);
+            customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
+            // We set the icon here to make sure it is properly set
+            marker.setIcon(customMarkerIcon);
+
+        }
+    }
+
+    private void centerMap(LatLng location) {
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
     }
 
     @Override
@@ -150,9 +188,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         if (isMapReady) {
             LatLng currentLocation = homeViewModel.getCurrentLocation().getValue();
             if (currentLocation != null) {
-                mapHelper.centerMap(currentLocation);
+                centerMap(currentLocation);
             } else {
-                // If the location is null, request location updates
                 locationHelper.checkLocationPermissions();
             }
         }
