@@ -187,7 +187,7 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         addReportViewModel.setDescription(description);
         addReportViewModel.setImageUri(selectedImageUri); // Pass the image URI to the ViewModel
 
-        addReportViewModel.setLocation(new LatLng(1.0, 1.0));
+        addReportViewModel.setLocation(new LatLng(addReportViewModel.getLocation().getValue().latitude, addReportViewModel.getLocation().getValue().longitude));
         addReportViewModel.addReport();
 
         NavHostFragment.findNavController(this)
