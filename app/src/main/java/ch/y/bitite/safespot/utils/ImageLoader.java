@@ -11,8 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
 import ch.y.bitite.safespot.BuildConfig;
@@ -22,22 +26,50 @@ public class ImageLoader {
     private static final String TAG = "ImageLoader";
     private final Context context;
 
+    public interface ImageLoadCallback {
+        void onImageLoaded();
+
+        void onImageLoadFailed();
+    }
+
     public ImageLoader(Context context) {
         this.context = context;
     }
 
-    public void loadImage(String imageFileName, ImageView imageView) {
+    public void loadImage(String imageFileName, ImageView imageView, ImageLoadCallback callback) {
         Log.d(TAG, "loadImage: " + imageFileName);
         if (imageFileName == null || imageFileName.trim().isEmpty()) {
             // Load the "not found" image
             Log.d(TAG, "loadImage: imageFileName is null or empty");
             loadNotFoundImage(imageView);
+            if (callback != null) {
+                callback.onImageLoadFailed();
+            }
         } else {
             // Load the image from the server
             Glide.with(context)
                     .asBitmap()
                     .load(BuildConfig.BASE_URL_IMAGES + imageFileName)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            Log.e(TAG, "onLoadFailed: Failed to load image", e);
+                            loadNotFoundImage(imageView);
+                            if (callback != null) {
+                                callback.onImageLoadFailed();
+                            }
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            if (callback != null) {
+                                callback.onImageLoaded();
+                            }
+                            return false;
+                        }
+                    })
                     .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -47,13 +79,6 @@ public class ImageLoader {
                         @Override
                         public void onLoadCleared(@Nullable Drawable placeholder) {
                             // Handle placeholder if needed
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            super.onLoadFailed(errorDrawable);
-                            Log.e(TAG, "onLoadFailed: Failed to load image");
-                            loadNotFoundImage(imageView);
                         }
                     });
         }
