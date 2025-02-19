@@ -144,7 +144,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         });
 
         homeViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports2 -> {
-            Log.d("HomeFragment", "getValidatedReports.observe");
             if (isMapReady) {
                 updateMapMarkers(reports2);
             }
@@ -155,23 +154,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         Log.d("HomeFragment", "updateMapMarkers: Updating map markers");
         googleMap.clear();
         for (ReportValidated report : reports) {
-            Log.d("HomeFragment", "Report title: " + report.getDescription());
-            Log.d("HomeFragment", "Report description: " + report.getDescription());
-            Log.d("HomeFragment", "Report imagePath: " + report.getImage());
+
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(new LatLng(report.getLatitude(), report.getLongitude()));
             Marker marker = googleMap.addMarker(markerOptions);
             assert marker != null;
             marker.setTag(report);
 
-            // Load the custom icon for individual markers.
-            Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.emergency_icon);
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MARKER_SIZE, MARKER_SIZE, false);
-            customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
-            // We set the icon here to make sure it is properly set
-            marker.setIcon(customMarkerIcon);
+            setMarkerIcon(marker);
 
         }
+    }
+
+    private void setMarkerIcon(Marker marker) {
+        // Load the custom icon for individual markers.
+        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.emergency_icon);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, MARKER_SIZE, MARKER_SIZE, false);
+        customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap);
+        // We set the icon here to make sure it is properly set
+        marker.setIcon(customMarkerIcon);
     }
 
     private void centerMap(LatLng location) {
