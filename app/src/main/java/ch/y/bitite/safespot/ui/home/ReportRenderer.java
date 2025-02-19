@@ -28,7 +28,7 @@ import ch.y.bitite.safespot.model.ReportClusterItem;
  */
 public class ReportRenderer extends DefaultClusterRenderer<ReportClusterItem> {
     private static final String TAG = "ReportRenderer";
-    private static final int MARKER_SIZE = 150;
+    private static final int MARKER_SIZE = 200;
     private static final int CLUSTER_RADIUS = 50;
     private static final int CLUSTER_OUTLINE_RADIUS = CLUSTER_RADIUS * 2;
     private static final int CLUSTER_SIZE = CLUSTER_OUTLINE_RADIUS * 2;
