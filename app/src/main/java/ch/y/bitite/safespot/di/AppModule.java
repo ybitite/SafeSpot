@@ -7,6 +7,7 @@ import com.bumptech.glide.RequestManager;
 
 import javax.inject.Singleton;
 
+import ch.y.bitite.safespot.utils.ImageLoader;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -33,5 +34,11 @@ public class AppModule {
     @Singleton
     public Context provideContext(@ApplicationContext Context context) {
         return context;
+    }
+
+    @Provides
+    @Singleton
+    public ImageLoader provideImageLoader(@ApplicationContext Context context) {
+        return new ImageLoader(context);
     }
 }
