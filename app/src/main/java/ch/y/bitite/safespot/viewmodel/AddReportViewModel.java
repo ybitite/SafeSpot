@@ -1,6 +1,7 @@
 package ch.y.bitite.safespot.viewmodel;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -30,6 +31,9 @@ public class AddReportViewModel extends ViewModel {
     private final MutableLiveData<Uri> imageUri = new MutableLiveData<>();
     private final MutableLiveData<ReportState> reportState = new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>(null);
+
     // Add this line
     private final MutableLiveData<GlobalReportState> globalReportState = new MutableLiveData<>(GlobalReportState.IDLE);
     /**
@@ -42,6 +46,24 @@ public class AddReportViewModel extends ViewModel {
         this.repository = repository;
     }
 
+
+    /**
+     * Gets the loading state LiveData.
+     *
+     * @return The loading state LiveData.
+     */
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
+
+    /**
+     * Gets the error message LiveData.
+     *
+     * @return The error message LiveData.
+     */
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
     /**
      * Gets the description LiveData.
      *
@@ -110,6 +132,7 @@ public class AddReportViewModel extends ViewModel {
      */
 
     public void addReport() {
+        isLoading.setValue(true);
 
         globalReportState.setValue(GlobalReportState.LOADING);
         String reportDescription = description.getValue();
@@ -129,15 +152,19 @@ public class AddReportViewModel extends ViewModel {
             @Override
             public void onSuccess() {
 
-                globalReportState.setValue(GlobalReportState.SUCCESS);
-                resetGlobalReportState();
+                isLoading.setValue(false);
+                errorMessage.setValue(null);
+                Log.d("AddReportViewModel", "addReport onSuccess");
+
             }
 
             @Override
-            public void onFailure(String errorMessage) {
+            public void onFailure(String errorMsg) {
 
-                globalReportState.setValue(GlobalReportState.FAILURE);
-                resetGlobalReportState();
+                isLoading.setValue(false);
+                errorMessage.setValue(errorMsg);
+                Log.d("AddReportViewModel", "addReport onSuccess");
+
             }
         });
 
