@@ -1,5 +1,6 @@
 package ch.y.bitite.safespot.ui.dashboard;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -49,7 +50,19 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         holder.textViewDateTime.setText(String.valueOf(currentReport.getDateTimeString()));
 
         // Load the image using ImageLoader
-        imageLoader.loadImage(currentReport.getImage(), holder.imageViewReport);
+        imageLoader.loadImage(currentReport.getImage(), holder.imageViewReport, new ImageLoader.ImageLoadCallback() {
+            @Override
+            public void onImageLoaded() {
+                Log.e("ReportAdapter", "Image loaded");
+
+            }
+
+            @Override
+            public void onImageLoadFailed() {
+                Log.e("ReportAdapter", "Failed to load image");
+
+            }
+        });
 
     }
 
