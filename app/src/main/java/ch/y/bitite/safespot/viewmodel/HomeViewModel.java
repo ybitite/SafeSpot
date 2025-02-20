@@ -79,7 +79,7 @@ public class HomeViewModel extends ViewModel {
 
             @Override
             public void onFailure(String errorMsg) {
-                if (!repository.isFirstFetch()){
+                if (repository.isFirstFetch()){
                     isLoading.setValue(false);
                     errorMessage.setValue(errorMsg);
                     Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
