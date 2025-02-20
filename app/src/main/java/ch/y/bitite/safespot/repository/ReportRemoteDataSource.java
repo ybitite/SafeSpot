@@ -98,7 +98,7 @@ public class ReportRemoteDataSource {
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d(API_SUCCESS_TAG, "Report added successfully!");
-                    callback.onSuccess();
+                    callback.onSuccess("Report added successfully!");
                 } else {
                     Log.e(API_ERROR_TAG, "Error adding report: " + response.code());
                     if (retryCount < MAX_RETRIES) {
@@ -150,7 +150,7 @@ public class ReportRemoteDataSource {
      * Callback interface for the addReport operation.
      */
     public interface AddReportCallback {
-        void onSuccess();
+        void onSuccess(String message);
 
         void onFailure(String errorMessage);
     }
