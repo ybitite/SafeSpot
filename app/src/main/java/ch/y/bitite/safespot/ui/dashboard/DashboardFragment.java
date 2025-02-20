@@ -15,7 +15,7 @@ import javax.inject.Inject;
 
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentDashboardBinding;
-import ch.y.bitite.safespot.utils.DashboardButtonHelper;
+import ch.y.bitite.safespot.utils.buttonhelper.DashboardButtonHelper;
 import ch.y.bitite.safespot.viewmodel.DashboardViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
