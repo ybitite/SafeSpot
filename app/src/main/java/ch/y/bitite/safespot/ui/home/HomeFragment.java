@@ -97,7 +97,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             }
         });
 
-        homeViewModel.fetchValidatedReports();
 
         addReportViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             Log.d("addReportViewModel", "isLoading changed: " + isLoading);
@@ -237,6 +236,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onRefreshClicked() {
-        homeViewModel.fetchValidatedReports();
+        if(homeViewModel.getValidatedReports().getValue() != null){
+            homeViewModel.fetchValidatedReports();
+        }
     }
 }
