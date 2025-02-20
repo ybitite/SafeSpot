@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        progressBar = binding.progressBar;
+        progressBar = binding.progressBarHome;
 
 
         mapView = binding.mapView;
@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         addReportViewModel = new ViewModelProvider(requireActivity()).get(AddReportViewModel.class);
 
-        progressBar = binding.progressBar;
+        progressBar = binding.progressBarHome;
 
         homeViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             Log.d("homeViewModel", "isLoading changed: " + isLoading);
@@ -233,5 +233,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         Log.d("HomeFragment", "onAddReportClicked");
         NavHostFragment.findNavController(this)
                 .navigate(R.id.action_homeFragment_to_addReportFragment);
+    }
+
+    @Override
+    public void onRefreshClicked() {
+        homeViewModel.fetchValidatedReports();
     }
 }
