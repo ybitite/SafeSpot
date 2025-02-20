@@ -9,12 +9,18 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.repository.ReportRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * ViewModel for the HomeFragment.
@@ -29,6 +35,10 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>(null);
     private final MutableLiveData<LatLng> currentLocation = new MutableLiveData<>();
+    private static final long REFRESH_INTERVAL = TimeUnit.SECONDS.toMillis(7200); // 1000 seconds
+    private final CompositeDisposable disposables = new CompositeDisposable();
+
+
 
     /**
      * Constructor for HomeViewModel.
@@ -40,6 +50,8 @@ public class HomeViewModel extends ViewModel {
         this.repository = repository;
 
         fetchValidatedReports();
+
+        startPeriodicRefresh();
     }
 
     /**
@@ -78,6 +90,17 @@ public class HomeViewModel extends ViewModel {
     }
 
     /**
+     * Starts the periodic refresh of validated reports.
+     */
+    private void startPeriodicRefresh() {
+        Disposable disposable = Observable.interval(REFRESH_INTERVAL, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(tick -> fetchValidatedReports());
+        disposables.add(disposable);
+    }
+
+    /**
      * Gets the loading state LiveData.
      *
      * @return The loading state LiveData.
@@ -111,5 +134,12 @@ public class HomeViewModel extends ViewModel {
      */
     public void setCurrentLocation(LatLng location) {
         currentLocation.setValue(location);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+
+        disposables.clear();
     }
 }
