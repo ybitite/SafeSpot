@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -48,19 +49,25 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Obtenir l'instance du ViewModel via ViewModelProvider
-        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
-
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         buttonHelper = new DashboardButtonHelper(root, this);
         buttonHelper.setupDashboardButtonListeners();
 
+
+        return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Obtenir l'instance du ViewModel via ViewModelProvider
+        dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+
         dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> {
             adapter.updateReports(reports);
         });
-
-        return root;
     }
 
     @Override
