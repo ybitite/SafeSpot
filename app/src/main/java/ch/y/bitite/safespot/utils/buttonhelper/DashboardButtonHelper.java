@@ -1,4 +1,4 @@
-package ch.y.bitite.safespot.utils;
+package ch.y.bitite.safespot.utils.buttonhelper;
 
 import android.view.View;
 import android.widget.Button;
