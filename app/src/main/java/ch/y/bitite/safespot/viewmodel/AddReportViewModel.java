@@ -148,12 +148,12 @@ public class AddReportViewModel extends ViewModel {
 
         Report report = new Report(reportLongitude, reportLatitude, reportDateTime, reportDescription, reportImage, reportVideo);
 
-        repository.addReport(report, imageUri.getValue(), new ReportRemoteDataSource.AddReportCallback() {
+        repository.addReport(report, imageUri.getValue(), new ReportRepository.AddReportCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String message) {
 
                 isLoading.setValue(false);
-                errorMessage.setValue(null);
+                errorMessage.setValue(message);
                 Log.d("AddReportViewModel", "addReport onSuccess");
 
             }
