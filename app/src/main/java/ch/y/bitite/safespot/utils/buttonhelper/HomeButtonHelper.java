@@ -10,17 +10,22 @@ public class HomeButtonHelper {
 
     private Button buttonAddReportHome;
     private Button buttonCenterMap;
+    private Button buttonRefresh;
     private HomeButtonCallback homeButtonCallback;
 
     public interface HomeButtonCallback {
         void onCenterMapClicked();
         void onAddReportClicked();
+        void onRefreshClicked();
+
     }
 
     public HomeButtonHelper(View root, HomeButtonCallback callback) {
         this.homeButtonCallback = callback;
         buttonAddReportHome = root.findViewById(R.id.buttonAddReportHome);
         buttonCenterMap = root.findViewById(R.id.buttonCenterMap);
+        buttonRefresh = root.findViewById(R.id.buttonRefreshHome);
+
     }
 
     public void setupHomeButtonListeners() {
@@ -30,6 +35,9 @@ public class HomeButtonHelper {
 
         buttonCenterMap.setOnClickListener(v -> {
             homeButtonCallback.onCenterMapClicked();
+        });
+        buttonRefresh.setOnClickListener(v -> {
+            homeButtonCallback.onRefreshClicked();
         });
     }
 }
