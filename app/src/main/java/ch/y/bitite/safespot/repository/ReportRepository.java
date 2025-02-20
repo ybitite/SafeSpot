@@ -111,13 +111,13 @@ public class ReportRepository {
      * @param imageUri   The URI of the image associated with the report.
      * @param callback   The callback to notify the result of the operation.
      */
-    public void addReport(Report report, Uri imageUri, ReportRemoteDataSource.AddReportCallback callback) {
+    public void addReport(Report report, Uri imageUri, AddReportCallback callback) {
         File file = fileDataSource.getFileFromUri(imageUri);
         remoteDataSource.addReport(report, file, new ReportRemoteDataSource.AddReportCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String message) {
                 Log.d(TAG, "Report added successfully!");
-                callback.onSuccess();
+                callback.onSuccess(message);
             }
 
             @Override
@@ -132,6 +132,12 @@ public class ReportRepository {
     }
     public interface FetchValidatedReportsCallback {
         void onSuccess(List<ReportValidated> reports);
+
+        void onFailure(String errorMessage);
+    }
+
+    public interface AddReportCallback {
+        void onSuccess(String message);
 
         void onFailure(String errorMessage);
     }
