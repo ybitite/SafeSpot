@@ -211,7 +211,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onDestroy() {
         Log.d("HomeFragment", "onDestroy");
         super.onDestroy();
-        mapView.onDestroy();
+       // mapView.onDestroy();
     }
 
     @Override
