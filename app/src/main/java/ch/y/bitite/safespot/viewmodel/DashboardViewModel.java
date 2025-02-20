@@ -29,7 +29,7 @@ public class DashboardViewModel extends ViewModel {
     private static final String TAG = "DashboardViewModel";
     private final ReportRepository repository;
     private final MutableLiveData<List<ReportValidated>> validatedReports = new MutableLiveData<>();
-    private static final long REFRESH_INTERVAL = TimeUnit.SECONDS.toMillis(1000); // 1000 seconds
+    private static final long REFRESH_INTERVAL = TimeUnit.SECONDS.toMillis(7200); // 1000 seconds
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     /**
