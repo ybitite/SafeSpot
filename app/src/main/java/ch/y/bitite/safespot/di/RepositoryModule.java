@@ -62,6 +62,6 @@ public class RepositoryModule {
             ReportFileDataSource fileDataSource,
             @ApplicationContext Context context // Add this line
     ) {
-        return new ReportRepository(localDataSource, remoteDataSource, fileDataSource, context); // Add context here
+        return new ReportRepository(localDataSource, remoteDataSource, fileDataSource);
     }
 }
