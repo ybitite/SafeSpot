@@ -46,10 +46,10 @@ public class ReportLocalDataSource {
      * @param reports The list of ReportValidated objects to insert.
      */
     public void insertValidatedReports(List<ReportValidated> reports) {
-        List<ReportValidated> existingReports = reportDao.getAllValidatedReports().getValue();
+
 
         executorService.execute(() -> {
-            if(existingReports != null){
+                List<ReportValidated> existingReports = reportDao.getListReports();
                 List<ReportValidated> reportsToInsert = new ArrayList<>();
                 List<ReportValidated> reportsToUpdate = new ArrayList<>();
                 List<ReportValidated> reportsToDelete = new ArrayList<>();
@@ -95,10 +95,7 @@ public class ReportLocalDataSource {
                 if (!reportsToDelete.isEmpty()) {
                     reportDao.deleteValidatedReports(reportsToDelete);
                 }
-            }
-            else {
-                reportDao.insertValidatedReports(reports);
-            }
+
         });
     }
 }
