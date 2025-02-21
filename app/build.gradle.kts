@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.logging.interceptor)
     implementation(libs.hilt.android)
+    implementation(libs.datastore)
+    implementation(libs.datastore.preferences.rxjava3)
     annotationProcessor(libs.hilt.compiler) // Utiliser annotationProcessor au lieu de kapt
     implementation(libs.rxjava)
     implementation(libs.rxandroid)
