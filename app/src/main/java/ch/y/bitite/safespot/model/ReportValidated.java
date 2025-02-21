@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,17 +21,13 @@ public class ReportValidated {
     private double longitude;
     private double latitude;
     @SerializedName("date_Time")
-    private String dateTimeString;
+    private final String dateTimeString;
     private String description;
     private String image;
-    private String video;
-    private String comment;
+    private final String video;
+    private final String comment;
     @SerializedName("date_Time_Validation")
-    private String dateTimeValidationString;
-    @Ignore
-    private Instant dateTime;
-    @Ignore
-    private Instant dateTimeValidation;
+    private final String dateTimeValidationString;
 
     public ReportValidated(double longitude, double latitude, String dateTimeString, String description, String image, String video, String comment, String dateTimeValidationString) {
         this.longitude = longitude;
@@ -43,19 +38,18 @@ public class ReportValidated {
         this.video = video;
         this.comment = comment;
         this.dateTimeValidationString = dateTimeValidationString;
-        this.dateTime = parseDateTime(dateTimeString);
-        this.dateTimeValidation = parseDateTime(dateTimeValidationString);
+        parseDateTime(dateTimeString);
+        parseDateTime(dateTimeValidationString);
     }
     @Ignore
-    private Instant parseDateTime(String dateTimeString) {
+    private void parseDateTime(String dateTimeString) {
         if (dateTimeString == null) {
-            return null;
+            return;
         }
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withLocale(Locale.getDefault()).withZone(ZoneId.of("UTC"));
-            return ZonedDateTime.parse(dateTimeString, formatter).toInstant();
-        } catch (DateTimeParseException e) {
-            return null;
+            ZonedDateTime.parse(dateTimeString, formatter).toInstant();
+        } catch (DateTimeParseException ignored) {
         }
     }
 
@@ -103,16 +97,8 @@ public class ReportValidated {
         return video;
     }
 
-    public void setVideo(String video) {
-        this.video = video;
-    }
-
     public String getComment() {
         return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getDateTimeString() {
@@ -121,14 +107,6 @@ public class ReportValidated {
 
     public String getDateTimeValidationString() {
         return dateTimeValidationString;
-    }
-    @Ignore
-    public Instant getDateTime() {
-        return dateTime;
-    }
-    @Ignore
-    public Instant getDateTimeValidation() {
-        return dateTimeValidation;
     }
 
     @Override
