@@ -50,14 +50,12 @@ public class ReportRemoteDataSource {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
                 } else {
-                    Log.e(API_ERROR_TAG, "Error fetching validated reports: " + response.code());
                     callback.onFailure("Error fetching validated reports: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ReportValidated>> call, @NonNull Throwable t) {
-                Log.e(API_ERROR_TAG, "Error fetching validated reports", t);
                 callback.onFailure("Error fetching validated reports: " + t.getMessage());
             }
         });
