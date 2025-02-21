@@ -1,5 +1,9 @@
 package ch.y.bitite.safespot.repository;
 
+import android.content.Context;
+import android.util.Log;
+
+import androidx.datastore.preferences.core.PreferencesKeys;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
@@ -10,6 +14,14 @@ import javax.inject.Inject;
 
 import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.model.room.ReportDao;
+import androidx.datastore.preferences.core.MutablePreferences;
+import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
+import androidx.datastore.rxjava3.RxDataStore;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Data source for managing Report data in the local database.
@@ -18,6 +30,8 @@ public class ReportLocalDataSource {
 
     private final ReportDao reportDao;
     private final ExecutorService executorService;
+    private final RxDataStore<Preferences> dataStore;
+    private static final Preferences.Key<Boolean> DATA_INSERTED_KEY = PreferencesKeys.booleanKey("data_inserted"); // Correct line
 
     /**
      * Constructor for ReportLocalDataSource.
@@ -26,9 +40,10 @@ public class ReportLocalDataSource {
      * @param executorService The ExecutorService for background tasks.
      */
     @Inject
-    public ReportLocalDataSource(ReportDao reportDao, ExecutorService executorService) {
+    public ReportLocalDataSource(ReportDao reportDao, ExecutorService executorService, Context context) {
         this.reportDao = reportDao;
         this.executorService = executorService;
+        this.dataStore = new RxPreferenceDataStoreBuilder(context, "my_app_prefs").build();
     }
 
     /**
@@ -46,56 +61,91 @@ public class ReportLocalDataSource {
      * @param reports The list of ReportValidated objects to insert.
      */
     public void insertValidatedReports(List<ReportValidated> reports) {
-
-
         executorService.execute(() -> {
-                List<ReportValidated> existingReports = reportDao.getListReports();
-                List<ReportValidated> reportsToInsert = new ArrayList<>();
-                List<ReportValidated> reportsToUpdate = new ArrayList<>();
-                List<ReportValidated> reportsToDelete = new ArrayList<>();
+            List<ReportValidated> existingReports = reportDao.getListReports();
+            List<ReportValidated> reportsToInsert = new ArrayList<>();
+            List<ReportValidated> reportsToUpdate = new ArrayList<>();
+            List<ReportValidated> reportsToDelete = new ArrayList<>();
 
-                // Find reports to insert or update
-                for (ReportValidated report : reports) {
-                    boolean found = false;
-                    for (ReportValidated existingReport : existingReports) {
-                        if (report.getId() == existingReport.getId()) {
-                            found = true;
-                            if (!report.equals(existingReport)) {
-                                reportsToUpdate.add(report);
-                            }
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        reportsToInsert.add(report);
-                    }
-                }
-
-                // Find reports to delete
+            // Find reports to insert or update
+            for (ReportValidated report : reports) {
+                boolean found = false;
                 for (ReportValidated existingReport : existingReports) {
-                    boolean found = false;
-                    for (ReportValidated report : reports) {
-                        if (report.getId() == existingReport.getId()) {
-                            found = true;
-                            break;
+                    if (report.getId() == existingReport.getId()) {
+                        found = true;
+                        if (!report.equals(existingReport)) {
+                            reportsToUpdate.add(report);
                         }
-                    }
-                    if (!found) {
-                        reportsToDelete.add(existingReport);
+                        break;
                     }
                 }
+                if (!found) {
+                    reportsToInsert.add(report);
+                }
+            }
 
-                // Perform database operations
-                if (!reportsToInsert.isEmpty()) {
-                    reportDao.insertValidatedReports(reportsToInsert);
+            // Find reports to delete
+            for (ReportValidated existingReport : existingReports) {
+                boolean found = false;
+                for (ReportValidated report : reports) {
+                    if (report.getId() == existingReport.getId()) {
+                        found = true;
+                        break;
+                    }
                 }
-                if (!reportsToUpdate.isEmpty()) {
-                    reportDao.updateValidatedReports(reportsToUpdate);
+                if (!found) {
+                    reportsToDelete.add(existingReport);
                 }
-                if (!reportsToDelete.isEmpty()) {
-                    reportDao.deleteValidatedReports(reportsToDelete);
-                }
+            }
 
+            // Perform database operations
+            if (!reportsToInsert.isEmpty()) {
+                reportDao.insertValidatedReports(reportsToInsert);
+            }
+            if (!reportsToUpdate.isEmpty()) {
+                reportDao.updateValidatedReports(reportsToUpdate);
+            }
+            if (!reportsToDelete.isEmpty()) {
+                reportDao.deleteValidatedReports(reportsToDelete);
+            }
         });
+        // Set data_inserted to false after insertion (outside of the executor)
+        setDataInserted(false);
+    }
+
+    /**
+     * Sets the data_inserted flag in DataStore.
+     *
+     * @param value The value to set.
+     */
+    private void setDataInserted(boolean value) {
+        Completable completable = dataStore.updateDataAsync(prefsIn -> {
+            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+            mutablePreferences.set(DATA_INSERTED_KEY, value);
+            return Single.just(mutablePreferences);
+        }).ignoreElement();
+
+        Disposable disposable = completable.subscribeOn(Schedulers.from(executorService))
+                .subscribe(() -> {
+                    // Success
+                    Log.d("ReportLocalDataSource", "setDataInserted: Success");
+                }, throwable -> {
+                    // Error
+                    Log.e("ReportLocalDataSource", "setDataInserted: Error", throwable);
+                });
+    }
+
+    /**
+     * Gets the data_inserted flag from DataStore.
+     *
+     * @return The data_inserted flag.
+     */
+    public boolean isDataInserted() {
+        try {
+            return dataStore.data().map(prefs -> prefs.get(DATA_INSERTED_KEY) != null ? prefs.get(DATA_INSERTED_KEY) : false).blockingFirst();
+        } catch (Exception e) {
+            Log.e("ReportLocalDataSource", "isDataInserted: Error", e);
+            return false;
+        }
     }
 }
