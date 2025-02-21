@@ -20,20 +20,12 @@ import ch.y.bitite.safespot.model.ReportValidated;
 public interface ReportDao {
 
     /**
-     * Retrieves all validated reports from the database, ordered by ID in descending order.
-     *
-     * @return A LiveData list of ReportValidated objects.
-     */
-    @Query("SELECT * FROM reports_validated ORDER BY id DESC")
-    LiveData<List<ReportValidated>> getAllValidatedReports();
-
-    /**
      * Retrieves all validated reports from the database.
      *
      * @return A list of ReportValidated objects.
      */
     @Query("SELECT * FROM reports_validated")
-    List<ReportValidated> getAllValidatedReportsNotLiveData();
+    LiveData<List<ReportValidated>> getAllValidatedReports();
 
     /**
      * Inserts a list of validated reports into the database.
