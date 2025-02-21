@@ -81,13 +81,16 @@ public class ReportRemoteDataSource {
      * @param retryCount The current retry count.
      */
     private void addReportWithRetry(Report report, File file, AddReportCallback callback, int retryCount) {
-        RequestBody requestFile = file != null ? RequestBody.create(MediaType.parse("multipart/form-data"), file) : null;
-        MultipartBody.Part imagePart = requestFile != null ? MultipartBody.Part.createFormData("image", file.getName(), requestFile) : null;
+        MultipartBody.Part imagePart = null;
+        if (file != null) {
+            RequestBody requestFile = RequestBody.create(file, MediaType.parse("multipart/form-data"));
+            imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+        }
 
-        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), report.getDescription() != null ? report.getDescription() : "");
-        RequestBody longitude = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(report.getLongitude()));
-        RequestBody latitude = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(report.getLatitude()));
-        RequestBody dateTime = RequestBody.create(MediaType.parse("text/plain"), report.getDateTimeUtc() != null ? report.getDateTimeUtc() : "");
+        RequestBody description = RequestBody.create(report.getDescription() != null ? report.getDescription() : "", MediaType.parse("text/plain"));
+        RequestBody longitude = RequestBody.create(String.valueOf(report.getLongitude()), MediaType.parse("text/plain"));
+        RequestBody latitude = RequestBody.create(String.valueOf(report.getLatitude()), MediaType.parse("text/plain"));
+        RequestBody dateTime = RequestBody.create(report.getDateTimeUtc() != null ? report.getDateTimeUtc() : "", MediaType.parse("text/plain"));
 
         Call<Void> call = apiService.addReport(imagePart, description, longitude, latitude, dateTime);
 
