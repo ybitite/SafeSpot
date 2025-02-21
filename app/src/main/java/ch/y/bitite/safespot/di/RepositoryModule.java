@@ -72,8 +72,8 @@ public class RepositoryModule {
      */
     @Provides
     @Singleton
-    public ReportRemoteDataSource provideReportRemoteDataSource(ApiService apiService) {
-        return new ReportRemoteDataSource(apiService);
+    public ReportRemoteDataSource provideReportRemoteDataSource(ApiService apiService, Context context) {
+        return new ReportRemoteDataSource(apiService, context);
     }
 
     /**
