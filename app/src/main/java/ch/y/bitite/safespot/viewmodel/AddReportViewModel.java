@@ -14,7 +14,6 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import ch.y.bitite.safespot.model.Report;
-import ch.y.bitite.safespot.repository.ReportRemoteDataSource;
 import ch.y.bitite.safespot.repository.ReportRepository;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -29,13 +28,10 @@ public class AddReportViewModel extends ViewModel {
     private final MutableLiveData<String> description = new MutableLiveData<>();
     private final MutableLiveData<LatLng> location = new MutableLiveData<>();
     private final MutableLiveData<Uri> imageUri = new MutableLiveData<>();
-    private final MutableLiveData<ReportState> reportState = new MutableLiveData<>();
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>(null);
 
-    // Add this line
-    private final MutableLiveData<GlobalReportState> globalReportState = new MutableLiveData<>(GlobalReportState.IDLE);
     /**
      * Constructor for AddReportViewModel.
      *
@@ -45,7 +41,6 @@ public class AddReportViewModel extends ViewModel {
     public AddReportViewModel(ReportRepository repository) {
         this.repository = repository;
     }
-
 
     /**
      * Gets the loading state LiveData.
@@ -64,6 +59,7 @@ public class AddReportViewModel extends ViewModel {
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
+
     /**
      * Gets the description LiveData.
      *
@@ -110,31 +106,11 @@ public class AddReportViewModel extends ViewModel {
     }
 
     /**
-     * Gets the image URI LiveData.
-     *
-     * @return The image URI LiveData.
-     */
-    public LiveData<Uri> getImageUri() {
-        return imageUri;
-    }
-
-    /**
-     * Gets the report state LiveData.
-     *
-     * @return The report state LiveData.
-     */
-    public LiveData<ReportState> getReportState() {
-        return reportState;
-    }
-
-    /**
      * Adds a new report.
      */
-
     public void addReport() {
         isLoading.setValue(true);
 
-        globalReportState.setValue(GlobalReportState.LOADING);
         String reportDescription = description.getValue();
         double reportLongitude = 0.0;
         double reportLatitude = 0.0;
@@ -151,55 +127,17 @@ public class AddReportViewModel extends ViewModel {
         repository.addReport(report, imageUri.getValue(), new ReportRepository.AddReportCallback() {
             @Override
             public void onSuccess(String message) {
-
                 isLoading.setValue(false);
                 errorMessage.setValue(message);
                 Log.d("AddReportViewModel", "addReport onSuccess");
-
             }
 
             @Override
             public void onFailure(String errorMsg) {
-
                 isLoading.setValue(false);
                 errorMessage.setValue(errorMsg);
-                Log.d("AddReportViewModel", "addReport onSuccess");
-
+                Log.d("AddReportViewModel", "addReport onFailure");
             }
         });
-
-    }
-
-    /**
-     * Gets the global report state LiveData.
-     *
-     * @return The global report state LiveData.
-     */
-    public LiveData<GlobalReportState> getGlobalReportState() {
-        return globalReportState;
-    }
-    /**
-     * Reset the global report state to IDLE.
-     */
-    public void resetGlobalReportState() {
-        globalReportState.setValue(GlobalReportState.IDLE);
-    }
-
-    /**
-     * Enum for the report state.
-     */
-    public enum ReportState {
-        LOADING,
-        SUCCESS,
-        FAILURE
-    }
-    /**
-     * Enum for the global report state.
-     */
-    public enum GlobalReportState {
-        IDLE,
-        LOADING,
-        SUCCESS,
-        FAILURE
     }
 }
