@@ -40,8 +40,13 @@ public class DashboardViewModel extends ViewModel {
     @Inject
     public DashboardViewModel(ReportRepository repository) {
         this.repository = repository;
-        //validatedReports = repository.getAllValidatedReports();
-        // Fetch reports immediately
+
+        repository.getAllValidatedReports().observeForever(reports -> {
+            if (reports != null) {
+                validatedReports.setValue(reports);
+            }
+        });
+
         fetchValidatedReports();
         // Start the periodic refresh
         startPeriodicRefresh();
@@ -71,6 +76,7 @@ public class DashboardViewModel extends ViewModel {
 
             @Override
             public void onFailure(String errorMessage) {
+
                 Log.e(TAG, "Error fetching validated reports: " + errorMessage);
             }
         });
