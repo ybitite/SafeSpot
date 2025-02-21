@@ -58,10 +58,4 @@ public interface ReportDao {
      */
     @Delete
     void deleteValidatedReports(List<ReportValidated> reports);
-
-    /**
-     * Deletes all validated reports from the database.
-     */
-    @Query("DELETE FROM reports_validated")
-    void deleteAllValidatedReports();
 }
