@@ -30,7 +30,6 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
     @Inject
     ReportAdapter adapter;
     private FragmentDashboardBinding binding;
-    private DashboardButtonHelper buttonHelper;
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -49,34 +48,47 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Set up the RecyclerView with a LinearLayoutManager and the ReportAdapter
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
-        buttonHelper = new DashboardButtonHelper(root, this);
-        buttonHelper.setupDashboardButtonListeners();
 
+        // Set up the button listeners using DashboardButtonHelper
+        DashboardButtonHelper buttonHelper = new DashboardButtonHelper(root, this);
+        buttonHelper.setupDashboardButtonListeners();
 
         return root;
     }
 
+    /**
+     * Called immediately after onCreateView() has returned, but before any saved state has been restored in to the view.
+     *
+     * @param view               The View returned by onCreateView().
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Obtenir l'instance du ViewModel via ViewModelProvider
+        // Instantiate DashboardViewModel using ViewModelProvider
         dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
-
-        dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> {
-            adapter.updateReports(reports);
-        });
+        // Observe the LiveData of validated reports and update the adapter when the data changes
+        dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> adapter.updateReports(reports));
     }
 
+    /**
+     * Called when the view is destroyed.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
+    /**
+     * Called when the add report button is clicked.
+     */
     @Override
     public void onAddReportClicked() {
         // Navigate to AddReportFragment
@@ -84,8 +96,12 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
                 .navigate(R.id.action_dashboardFragment_to_addReportFragment);
     }
 
+    /**
+     * Called when the refresh button is clicked.
+     */
     @Override
     public void onRefreshClicked() {
+        // Check if there are existing validated reports and fetch new ones if there are
         if(dashboardViewModel.getValidatedReports().getValue() != null){
             dashboardViewModel.fetchValidatedReports();
         }
