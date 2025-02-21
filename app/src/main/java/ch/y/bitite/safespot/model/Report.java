@@ -1,5 +1,7 @@
 package ch.y.bitite.safespot.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
@@ -58,10 +60,8 @@ public class Report {
         return image;
     }
 
-    public String getVideo() {
-        return video;
-    }
 
+    @NonNull
     @Override
     public String toString() {
         return "Report{" +
