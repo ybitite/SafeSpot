@@ -15,4 +15,5 @@
     <string name="add_report_button_content_description">Button to add a new report</string>
     <string name="center_map">Center Map</string>
     <string name="center_map_button_content_description">Button to center the map on your current location</string>
+    <string name="location_unavailable">Location Unavailable</string>
 </resources>
