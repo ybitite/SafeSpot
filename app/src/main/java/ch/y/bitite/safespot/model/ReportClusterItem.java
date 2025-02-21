@@ -13,12 +13,6 @@ public class ReportClusterItem implements ClusterItem {
     private final String date;
     private final String imageFileName;
 
-    public ReportValidated getReportValidated() {
-        return reportValidated;
-    }
-
-    private final ReportValidated reportValidated;
-
 
     public ReportClusterItem(ReportValidated report) {
         this.position = new LatLng(report.getLatitude(), report.getLongitude());
@@ -27,9 +21,9 @@ public class ReportClusterItem implements ClusterItem {
         this.zIndex = 0.0f;
         this.date = report.getDateTimeString();
         this.imageFileName = report.getImage();
-        reportValidated = report;
     }
 
+    @NonNull
     @Override
     public LatLng getPosition() {
         return position;
