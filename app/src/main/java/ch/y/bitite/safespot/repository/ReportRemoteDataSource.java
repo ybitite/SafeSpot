@@ -1,5 +1,7 @@
 package ch.y.bitite.safespot.repository;
 
+
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.model.Report;
 import ch.y.bitite.safespot.model.ReportValidated;
 import ch.y.bitite.safespot.network.ApiService;
@@ -27,6 +30,7 @@ public class ReportRemoteDataSource {
     private static final String API_SUCCESS_TAG = "API_SUCCESS";
     private static final int MAX_RETRIES = 5;
     private final ApiService apiService;
+    private final Context context;
 
     /**
      * Constructor for ReportRemoteDataSource.
@@ -34,8 +38,10 @@ public class ReportRemoteDataSource {
      * @param apiService The ApiService for network requests.
      */
     @Inject
-    public ReportRemoteDataSource(ApiService apiService) {
+    public ReportRemoteDataSource(ApiService apiService, Context context) {
+
         this.apiService = apiService;
+        this.context = context;
     }
 
     /**
@@ -50,13 +56,13 @@ public class ReportRemoteDataSource {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
                 } else {
-                    callback.onFailure("Error fetching validated reports: " + response.code());
+                    callback.onFailure(context.getString(R.string.error_fetching_validated_reports) + response.code());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ReportValidated>> call, @NonNull Throwable t) {
-                callback.onFailure("Error fetching validated reports: " + t.getMessage());
+                callback.onFailure(context.getString(R.string.error_fetching_validated_reports) + t.getMessage());
             }
         });
     }
@@ -105,7 +111,7 @@ public class ReportRemoteDataSource {
                     if (retryCount < MAX_RETRIES) {
                         retryAddReport(report, file, callback, retryCount + 1);
                     } else {
-                        callback.onFailure("Error adding report after multiple retries: " + response.code());
+                        callback.onFailure(context.getString(R.string.error_adding_report_after_multiple_retries) + response.code());
                     }
                 }
             }
@@ -116,7 +122,7 @@ public class ReportRemoteDataSource {
                 if (retryCount < MAX_RETRIES) {
                     retryAddReport(report, file, callback, retryCount + 1);
                 } else {
-                    callback.onFailure("Error adding report after multiple retries: " + t.getMessage());
+                    callback.onFailure(context.getString(R.string.error_adding_report_after_multiple_retries) + t.getMessage());
                 }
             }
         });
