@@ -23,6 +23,9 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.model.ReportClusterItem;
 
+/**
+ * Custom renderer for clustering ReportClusterItems on the map.
+ */
 public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClusterItem> {
 
     private static final String TAG = "ReportRenderer";
@@ -39,6 +42,13 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
 
     private final Context context;
 
+    /**
+     * Constructor for ReportClusterItemRenderer.
+     *
+     * @param context        The application context.
+     * @param map            The GoogleMap instance.
+     * @param clusterManager The ClusterManager instance.
+     */
     public ReportClusterItemRenderer(Context context, GoogleMap map, ClusterManager<ReportClusterItem> clusterManager) {
         super(context, map, clusterManager);
         this.context = context;
@@ -66,7 +76,7 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
      * @param markerOptions The marker options.
      */
     @Override
-    protected void onBeforeClusterItemRendered(ReportClusterItem item, MarkerOptions markerOptions) {
+    protected void onBeforeClusterItemRendered(@NonNull ReportClusterItem item, MarkerOptions markerOptions) {
         // Customize the marker here
         markerOptions.icon(customMarkerIcon);
     }
@@ -78,7 +88,7 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
      * @param marker      The rendered marker.
      */
     @Override
-    protected void onClusterItemRendered(ReportClusterItem clusterItem, Marker marker) {
+    protected void onClusterItemRendered(@NonNull ReportClusterItem clusterItem, Marker marker) {
         // Set the tag here
         marker.setTag(clusterItem);
     }
@@ -97,12 +107,19 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
         markerOptions.icon(createClusterIcon(clusterSize, color));
     }
 
+    /**
+     * Called when a cluster is updated.
+     *
+     * @param cluster The cluster that was updated.
+     * @param marker  The marker representing the cluster.
+     */
     @Override
     protected void onClusterUpdated(@NonNull Cluster<ReportClusterItem> cluster, @NonNull Marker marker) {
         Log.d(TAG, "onClusterUpdated: Update Rendering a cluster");
         int clusterSize = cluster.getSize();
         int color = getClusterColor(clusterSize);
-        marker.setIcon(createClusterIcon(clusterSize, color));    }
+        marker.setIcon(createClusterIcon(clusterSize, color));
+    }
 
     /**
      * Called to determine if a cluster should be rendered or not.
@@ -132,17 +149,17 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
         // Draw the transparent halo.
         clusterHaloPaint.setColor(color);
         clusterHaloPaint.setAlpha(HALO_ALPHA);
-        canvas.drawCircle(CLUSTER_SIZE / 2, CLUSTER_SIZE / 2, CLUSTER_OUTLINE_RADIUS, clusterHaloPaint);
+        canvas.drawCircle((float) CLUSTER_SIZE / 2, (float) CLUSTER_SIZE / 2, CLUSTER_OUTLINE_RADIUS, clusterHaloPaint);
 
         // Draw the inner circle.
         Paint paintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintCircle.setColor(color);
-        canvas.drawCircle(CLUSTER_SIZE / 2, CLUSTER_SIZE / 2, CLUSTER_RADIUS, paintCircle);
+        canvas.drawCircle((float) CLUSTER_SIZE / 2, (float) CLUSTER_SIZE / 2, CLUSTER_RADIUS, paintCircle);
 
         // Draw the text (cluster size).
         String text = String.valueOf(clusterSize);
-        float textX = CLUSTER_SIZE / 2;
-        float textY = CLUSTER_SIZE / 2 - (clusterTextPaint.descent() + clusterTextPaint.ascent()) / 2;
+        float textX = (float) CLUSTER_SIZE / 2;
+        float textY = (float) CLUSTER_SIZE / 2 - (clusterTextPaint.descent() + clusterTextPaint.ascent()) / 2;
         canvas.drawText(text, textX, textY, clusterTextPaint);
 
         return BitmapDescriptorFactory.fromBitmap(bitmap);
