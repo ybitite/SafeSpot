@@ -65,6 +65,7 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
         // Obtenir l'instance du ViewModel via ViewModelProvider
         dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
+
         dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> {
             adapter.updateReports(reports);
         });
