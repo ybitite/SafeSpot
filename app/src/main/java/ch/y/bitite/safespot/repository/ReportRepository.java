@@ -85,6 +85,10 @@ public class ReportRepository {
         });
     }
 
+    public boolean isDataInserted(){
+        return localDataSource.isDataInserted();
+    }
+
     public interface FetchValidatedReportsCallback {
         void onSuccess(List<ReportValidated> reports);
         void onFailure(String errorMessage);
