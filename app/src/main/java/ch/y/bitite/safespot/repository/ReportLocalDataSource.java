@@ -46,52 +46,58 @@ public class ReportLocalDataSource {
      * @param reports The list of ReportValidated objects to insert.
      */
     public void insertValidatedReports(List<ReportValidated> reports) {
+        List<ReportValidated> existingReports = reportDao.getAllValidatedReports().getValue();
+
         executorService.execute(() -> {
-            List<ReportValidated> existingReports = reportDao.getAllValidatedReportsNotLiveData();
-            List<ReportValidated> reportsToInsert = new ArrayList<>();
-            List<ReportValidated> reportsToUpdate = new ArrayList<>();
-            List<ReportValidated> reportsToDelete = new ArrayList<>();
+            if(existingReports != null){
+                List<ReportValidated> reportsToInsert = new ArrayList<>();
+                List<ReportValidated> reportsToUpdate = new ArrayList<>();
+                List<ReportValidated> reportsToDelete = new ArrayList<>();
 
-            // Find reports to insert or update
-            for (ReportValidated report : reports) {
-                boolean found = false;
-                for (ReportValidated existingReport : existingReports) {
-                    if (report.getId() == existingReport.getId()) {
-                        found = true;
-                        if (!report.equals(existingReport)) {
-                            reportsToUpdate.add(report);
-                        }
-                        break;
-                    }
-                }
-                if (!found) {
-                    reportsToInsert.add(report);
-                }
-            }
-
-            // Find reports to delete
-            for (ReportValidated existingReport : existingReports) {
-                boolean found = false;
+                // Find reports to insert or update
                 for (ReportValidated report : reports) {
-                    if (report.getId() == existingReport.getId()) {
-                        found = true;
-                        break;
+                    boolean found = false;
+                    for (ReportValidated existingReport : existingReports) {
+                        if (report.getId() == existingReport.getId()) {
+                            found = true;
+                            if (!report.equals(existingReport)) {
+                                reportsToUpdate.add(report);
+                            }
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        reportsToInsert.add(report);
                     }
                 }
-                if (!found) {
-                    reportsToDelete.add(existingReport);
+
+                // Find reports to delete
+                for (ReportValidated existingReport : existingReports) {
+                    boolean found = false;
+                    for (ReportValidated report : reports) {
+                        if (report.getId() == existingReport.getId()) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        reportsToDelete.add(existingReport);
+                    }
+                }
+
+                // Perform database operations
+                if (!reportsToInsert.isEmpty()) {
+                    reportDao.insertValidatedReports(reportsToInsert);
+                }
+                if (!reportsToUpdate.isEmpty()) {
+                    reportDao.updateValidatedReports(reportsToUpdate);
+                }
+                if (!reportsToDelete.isEmpty()) {
+                    reportDao.deleteValidatedReports(reportsToDelete);
                 }
             }
-
-            // Perform database operations
-            if (!reportsToInsert.isEmpty()) {
-                reportDao.insertValidatedReports(reportsToInsert);
-            }
-            if (!reportsToUpdate.isEmpty()) {
-                reportDao.updateValidatedReports(reportsToUpdate);
-            }
-            if (!reportsToDelete.isEmpty()) {
-                reportDao.deleteValidatedReports(reportsToDelete);
+            else {
+                reportDao.insertValidatedReports(reports);
             }
         });
     }
