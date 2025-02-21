@@ -78,14 +78,13 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onSuccess(List<ReportValidated> reports) {
                 validatedReports.setValue(reports);
-                isLoading.setValue(false);
                 errorMessage.setValue(null);
+                isLoading.setValue(false);
                 Log.d(TAG, "fetchValidatedReports onSuccess");
             }
 
             @Override
             public void onFailure(String errorMsg) {
-
                 isLoading.setValue(false);
                 errorMessage.setValue(errorMsg);
                 Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
@@ -140,6 +139,11 @@ public class HomeViewModel extends ViewModel {
     public void setCurrentLocation(LatLng location) {
         currentLocation.setValue(location);
     }
+
+    public boolean isDataInserted(){
+        return repository.isDataInserted();
+    }
+
 
     @Override
     protected void onCleared() {
