@@ -31,6 +31,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Objects;
+
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentAddReportBinding;
 import ch.y.bitite.safespot.utils.buttonhelper.AddReportButtonHelper;
@@ -50,7 +52,6 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     private TextView textViewLongitude;
     AddReportViewModel addReportViewModel;
     private LocationHelper locationHelper;
-    private AddReportButtonHelper buttonHelper;
     private static final String TAG = "AddReportFragment";
     private boolean isLocationRequested = false;
     private static final String KEY_DESCRIPTION = "description";
@@ -59,7 +60,6 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
 
     private ImageView imageView;
     private Uri selectedImageUri;
-    private Button buttonAddImage;
     private static final int REQUEST_IMAGE_PICK = 100;
     private FragmentAddReportBinding binding;
 
@@ -88,10 +88,10 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         // Remove this line
         // progressBar = binding.progressBar;
         locationHelper = new LocationHelper(this, this);
-        buttonHelper = new AddReportButtonHelper(view, this);
+        AddReportButtonHelper buttonHelper = new AddReportButtonHelper(view, this);
         buttonHelper.setupAddReportButtonListeners();
         imageView = binding.imageView;
-        buttonAddImage = binding.buttonAddImage;
+        Button buttonAddImage = binding.buttonAddImage;
         buttonAddImage.setOnClickListener(v -> checkPermissionAndOpenGallery());
         if (savedInstanceState != null) {
             editTextDescription.setText(savedInstanceState.getString(KEY_DESCRIPTION));
@@ -147,8 +147,8 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
             updateLocationTextViews(location);
         } else {
             // Location is null, handle this case (e.g., display a message)
-            textViewLatitude.setText("Location Unavailable");
-            textViewLongitude.setText("Location Unavailable");
+            textViewLatitude.setText(R.string.location_unavailable);
+            textViewLongitude.setText(R.string.location_unavailable);
             Log.w(TAG, "Location is null");
         }
     }
@@ -187,7 +187,7 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
         addReportViewModel.setDescription(description);
         addReportViewModel.setImageUri(selectedImageUri); // Pass the image URI to the ViewModel
 
-        addReportViewModel.setLocation(new LatLng(addReportViewModel.getLocation().getValue().latitude, addReportViewModel.getLocation().getValue().longitude));
+        addReportViewModel.setLocation(new LatLng(Objects.requireNonNull(addReportViewModel.getLocation().getValue()).latitude, addReportViewModel.getLocation().getValue().longitude));
         addReportViewModel.addReport();
 
         NavHostFragment.findNavController(this)
