@@ -20,8 +20,6 @@ import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Data source for managing Report data in the local database.
@@ -110,29 +108,19 @@ public class ReportLocalDataSource {
             }
         });
         // Set data_inserted to false after insertion (outside of the executor)
-        setDataInserted(false);
+        setDataInserted();
     }
 
     /**
      * Sets the data_inserted flag in DataStore.
-     *
-     * @param value The value to set.
      */
-    private void setDataInserted(boolean value) {
+    private void setDataInserted() {
         Completable completable = dataStore.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
-            mutablePreferences.set(DATA_INSERTED_KEY, value);
+            mutablePreferences.set(DATA_INSERTED_KEY, false);
             return Single.just(mutablePreferences);
         }).ignoreElement();
 
-        Disposable disposable = completable.subscribeOn(Schedulers.from(executorService))
-                .subscribe(() -> {
-                    // Success
-                    Log.d("ReportLocalDataSource", "setDataInserted: Success");
-                }, throwable -> {
-                    // Error
-                    Log.e("ReportLocalDataSource", "setDataInserted: Error", throwable);
-                });
     }
 
     /**
