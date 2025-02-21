@@ -22,20 +22,29 @@ import com.bumptech.glide.request.transition.Transition;
 import ch.y.bitite.safespot.BuildConfig;
 import ch.y.bitite.safespot.R;
 
+/**
+ * Utility class for loading images into ImageViews using Glide.
+ */
 public class ImageLoader {
     private static final String TAG = "ImageLoader";
     private final Context context;
 
-    public interface ImageLoadCallback {
-        void onImageLoaded();
-
-        void onImageLoadFailed();
-    }
-
+    /**
+     * Constructor for ImageLoader.
+     *
+     * @param context The application context.
+     */
     public ImageLoader(Context context) {
         this.context = context;
     }
 
+    /**
+     * Loads an image into an ImageView.
+     *
+     * @param imageFileName The name of the image file to load.
+     * @param imageView     The ImageView to load the image into.
+     * @param callback      The callback to notify of image loading events.
+     */
     public void loadImage(String imageFileName, ImageView imageView, ImageLoadCallback callback) {
         Log.d(TAG, "loadImage: " + imageFileName);
         if (imageFileName == null || imageFileName.trim().isEmpty()) {
@@ -53,7 +62,7 @@ public class ImageLoader {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(new RequestListener<Bitmap>() {
                         @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Bitmap> target, boolean isFirstResource) {
                             Log.e(TAG, "onLoadFailed: Failed to load image", e);
                             loadNotFoundImage(imageView);
                             if (callback != null) {
@@ -63,7 +72,7 @@ public class ImageLoader {
                         }
 
                         @Override
-                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        public boolean onResourceReady(@NonNull Bitmap resource, @NonNull Object model, Target<Bitmap> target, @NonNull DataSource dataSource, boolean isFirstResource) {
                             if (callback != null) {
                                 callback.onImageLoaded();
                             }
@@ -84,9 +93,29 @@ public class ImageLoader {
         }
     }
 
+    /**
+     * Loads the "not found" image into an ImageView.
+     *
+     * @param imageView The ImageView to load the image into.
+     */
     private void loadNotFoundImage(ImageView imageView) {
         // Load the "not found" image from resources
         Drawable notFoundDrawable = ContextCompat.getDrawable(context, R.drawable.image_not_found);
         imageView.setImageDrawable(notFoundDrawable);
+    }
+
+    /**
+     * Callback interface for image loading events.
+     */
+    public interface ImageLoadCallback {
+        /**
+         * Called when the image has been successfully loaded.
+         */
+        void onImageLoaded();
+
+        /**
+         * Called when the image loading has failed.
+         */
+        void onImageLoadFailed();
     }
 }
