@@ -35,10 +35,8 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>(null);
     private final MutableLiveData<LatLng> currentLocation = new MutableLiveData<>();
-    private static final long REFRESH_INTERVAL = TimeUnit.SECONDS.toMillis(7200); // 1000 seconds
+    private static final long REFRESH_INTERVAL = TimeUnit.HOURS.toMillis(2); // 2 hours
     private final CompositeDisposable disposables = new CompositeDisposable();
-
-
 
     /**
      * Constructor for HomeViewModel.
@@ -73,22 +71,22 @@ public class HomeViewModel extends ViewModel {
      * Fetches validated reports from the repository.
      */
     public void fetchValidatedReports() {
+        Log.d(TAG, "fetchValidatedReports: Fetching validated reports"); // Important log: Indicates the start of the fetch operation.
         isLoading.setValue(true);
         repository.fetchValidatedReports(new ReportRepository.FetchValidatedReportsCallback() {
             @Override
             public void onSuccess(List<ReportValidated> reports) {
+                Log.d(TAG, "fetchValidatedReports: Success - Received " + reports.size() + " reports"); // Important log: Indicates successful fetch.
                 validatedReports.setValue(reports);
                 errorMessage.setValue(null);
                 isLoading.setValue(false);
-                Log.d(TAG, "fetchValidatedReports onSuccess");
             }
 
             @Override
             public void onFailure(String errorMsg) {
+                Log.e(TAG, "fetchValidatedReports: Error fetching validated reports: " + errorMsg); // Important log: Indicates a failure in fetching.
                 isLoading.setValue(false);
                 errorMessage.setValue(errorMsg);
-                Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
-
             }
         });
     }
@@ -97,10 +95,14 @@ public class HomeViewModel extends ViewModel {
      * Starts the periodic refresh of validated reports.
      */
     private void startPeriodicRefresh() {
+        Log.d(TAG, "startPeriodicRefresh: Starting periodic refresh with interval: " + REFRESH_INTERVAL + "ms"); // Important log: Indicates the start of the periodic refresh.
         Disposable disposable = Observable.interval(REFRESH_INTERVAL, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tick -> fetchValidatedReports());
+                .subscribe(tick -> {
+                    Log.d(TAG, "startPeriodicRefresh: Periodic refresh triggered"); // Important log: Indicates that a periodic refresh has been triggered.
+                    fetchValidatedReports();
+                });
         disposables.add(disposable);
     }
 
@@ -140,15 +142,22 @@ public class HomeViewModel extends ViewModel {
         currentLocation.setValue(location);
     }
 
-    public boolean isDataInserted(){
+    /**
+     * Checks if data has been inserted.
+     *
+     * @return True if data has been inserted, false otherwise.
+     */
+    public boolean isDataInserted() {
         return repository.isDataInserted();
     }
 
-
+    /**
+     * Called when the ViewModel is no longer used and will be destroyed.
+     */
     @Override
     protected void onCleared() {
         super.onCleared();
-
+        Log.d(TAG, "onCleared: ViewModel is being cleared"); // Important log: Indicates that the ViewModel is being cleared.
         disposables.clear();
     }
 }
