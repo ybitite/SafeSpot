@@ -16,4 +16,6 @@
     <string name="center_map">Center Map</string>
     <string name="center_map_button_content_description">Button to center the map on your current location</string>
     <string name="location_unavailable">Location Unavailable</string>
+    <string name="error_adding_report_after_multiple_retries">"Error adding report after multiple retries: "</string>
+    <string name="error_fetching_validated_reports">"Error fetching validated reports: "</string>
 </resources>
