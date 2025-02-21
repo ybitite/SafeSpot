@@ -45,11 +45,11 @@
         android:id="@+id/progressBarHome"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonAddReportHome"
-        app:layout_constraintStart_toEndOf="@+id/buttonCenterMap" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonCenterMap"
+        app:layout_constraintEnd_toEndOf="@+id/buttonCenterMap"
+        app:layout_constraintStart_toStartOf="@+id/buttonCenterMap" />
 
     <Button
         android:id="@+id/buttonRefreshHome"
