@@ -38,8 +38,8 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public ReportLocalDataSource provideReportLocalDataSource(ReportDao reportDao, ExecutorService executorService) {
-        return new ReportLocalDataSource(reportDao, executorService);
+    public ReportLocalDataSource provideReportLocalDataSource(ReportDao reportDao, ExecutorService executorService, Context context) {
+        return new ReportLocalDataSource(reportDao, executorService, context);
     }
 
     @Provides
