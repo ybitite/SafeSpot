@@ -4,17 +4,29 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
+/**
+ * Utility class for file operations.
+ */
 public class FileUtils {
 
+    /**
+     * Retrieves a File object from a given URI.
+     *
+     * @param uri     The URI of the file.
+     * @param context The application context.
+     * @return The File object, or null if an error occurred.
+     */
     public static File getFileFromUri(Uri uri, Context context) {
         File file = null;
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             String fileName = getFileName(uri, context);
             if (fileName == null) {
@@ -32,16 +44,23 @@ public class FileUtils {
                 outputStream.flush();
                 outputStream.close();
             }
-            inputStream.close();
+            Objects.requireNonNull(inputStream).close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("FileUtils", "Error reading file from URI", e);
         }
         return file;
     }
 
+    /**
+     * Gets the file name from a given URI.
+     *
+     * @param uri     The URI of the file.
+     * @param context The application context.
+     * @return The file name, or null if it could not be determined.
+     */
     private static String getFileName(Uri uri, Context context) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
+        if (Objects.equals(uri.getScheme(), "content")) {
             try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
@@ -53,6 +72,7 @@ public class FileUtils {
         }
         if (result == null) {
             result = uri.getPath();
+            Objects.requireNonNull(result);
             int cut = result.lastIndexOf('/');
             if (cut != -1) {
                 result = result.substring(cut + 1);
