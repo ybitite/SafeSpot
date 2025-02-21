@@ -49,6 +49,12 @@ public class HomeViewModel extends ViewModel {
     public HomeViewModel(ReportRepository repository) {
         this.repository = repository;
 
+        repository.getAllValidatedReports().observeForever(reports -> {
+            if (reports != null) {
+                validatedReports.setValue(reports);
+            }
+        });
+
         fetchValidatedReports();
 
         startPeriodicRefresh();
@@ -79,11 +85,10 @@ public class HomeViewModel extends ViewModel {
 
             @Override
             public void onFailure(String errorMsg) {
-                if (repository.isFirstFetch()){
-                    isLoading.setValue(false);
-                    errorMessage.setValue(errorMsg);
-                    Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
-                }
+
+                isLoading.setValue(false);
+                errorMessage.setValue(errorMsg);
+                Log.e(TAG, "fetchValidatedReports onFailure: " + errorMessage);
 
             }
         });
