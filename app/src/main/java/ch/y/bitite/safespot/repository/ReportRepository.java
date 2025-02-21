@@ -38,6 +38,11 @@ public class ReportRepository {
         this.fileDataSource = fileDataSource;
     }
 
+    /**
+     * Retrieves all validated reports from the local data source.
+     *
+     * @return A LiveData list of ReportValidated objects.
+     */
     public LiveData<List<ReportValidated>> getAllValidatedReports() {
         return localDataSource.getAllValidatedReports();
     }
@@ -45,6 +50,8 @@ public class ReportRepository {
 
     /**
      * Fetches validated reports from the API and updates the local database.
+     *
+     * @param callback The callback to notify the result of the operation.
      */
     public void fetchValidatedReports(FetchValidatedReportsCallback callback) {
         remoteDataSource.fetchValidatedReports(new ReportRemoteDataSource.FetchValidatedReportsCallback() {
@@ -85,10 +92,18 @@ public class ReportRepository {
         });
     }
 
+    /**
+     * Checks if data has been inserted into the local data source.
+     *
+     * @return True if data has been inserted, false otherwise.
+     */
     public boolean isDataInserted(){
         return localDataSource.isDataInserted();
     }
 
+    /**
+     * Callback interface for the fetchValidatedReports operation.
+     */
     public interface FetchValidatedReportsCallback {
         void onSuccess(List<ReportValidated> reports);
         void onFailure(String errorMessage);
