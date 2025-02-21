@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         });
 
         homeViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
-            if (errorMessage != null) {
+            if (errorMessage != null && homeViewModel.isDataInserted()) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
