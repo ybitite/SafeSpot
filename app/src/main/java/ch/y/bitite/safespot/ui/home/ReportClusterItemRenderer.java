@@ -89,7 +89,7 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
      */
     @Override
     protected void onClusterItemRendered(@NonNull ReportClusterItem clusterItem, Marker marker) {
-        // Set the tag here
+        // Set the tag
         marker.setTag(clusterItem);
     }
 
@@ -173,7 +173,7 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
      */
     private int getClusterColor(int clusterSize) {
         if (clusterSize <= 5) {
-            return ContextCompat.getColor(context, R.color.green);
+            return ContextCompat.getColor(context, R.color.teal_200);
         } else if (clusterSize <= 10) {
             return ContextCompat.getColor(context, R.color.yellow);
         } else {
