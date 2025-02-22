@@ -18,4 +18,6 @@
     <string name="location_unavailable">Location Unavailable</string>
     <string name="error_adding_report_after_multiple_retries">"Error adding report after multiple retries: "</string>
     <string name="error_fetching_validated_reports">"Error fetching validated reports: "</string>
+    <string name="add_image">Add Image</string>
+    <string name="image_report_description">Image Report</string>
 </resources>
