@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeSpot</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_dashboard">Panel de control</string>
+    <string name="description">Descripción</string>
+    <string name="longitude">Longitud</string>
+    <string name="latitude">Latitud</string>
+    <string name="date">Fecha</string>
+    <string name="add_report">Añadir informe</string>
+    <string name="cancel">Cancelar</string>
+    <string name="refresh">Actualizar</string>
+    <string name="add_image">Añadir imagen</string>
+    <string name="center_map">Centrar mapa</string>
+    <string name="map_content_description">Mapa de informes validados</string>
+    <string name="center_map_button_content_description">Botón para centrar el mapa en tu ubicación actual</string>
+    <string name="add_report_button_description">Añadir un nuevo informe</string>
+    <string name="add_report_button_content_description">Botón para añadir un nuevo informe</string>
+    <string name="image_report_description">Informe con imagen</string>
+    <string name="location_unavailable">Ubicación no disponible</string>
+    <string name="error_adding_report_after_multiple_retries">"Error al añadir el informe después de varios intentos : "</string>
+    <string name="error_fetching_validated_reports">"Error al obtener los informes validados : "</string>
+    <string name="report_added_successfully">Informe añadido con éxito !</string>
+</resources>
