@@ -9,7 +9,7 @@
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description"
+        android:text="@string/description"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -17,19 +17,19 @@
         android:id="@+id/textViewLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude" />
+        android:text="@string/latitude" />
 
     <TextView
         android:id="@+id/textViewLongitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Longitude" />
+        android:text="@string/longitude" />
 
     <TextView
         android:id="@+id/textViewDateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date Time" />
+        android:text="@string/date" />
 
     <ImageView
         android:id="@+id/imageViewReport"
@@ -37,6 +37,6 @@
         android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="8dp"
-        android:contentDescription="Report Image" />
+        android:contentDescription="@string/image_report_description" />
 
 </LinearLayout>
