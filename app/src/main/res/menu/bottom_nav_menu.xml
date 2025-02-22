@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- Menu for the bottom navigation view -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Home menu item -->
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_home" />
 
+    <!-- Dashboard menu item -->
     <item
         android:id="@+id/dashboardFragment"
         android:icon="@drawable/ic_dashboard_black_24dp"
