@@ -1,23 +1,36 @@
 <resources>
+    <!-- App Information -->
     <string name="app_name">SafeSpot</string>
+
+    <!-- Main Navigation Titles -->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
+
+    <!-- Input Field Labels and Hints -->
     <string name="description">Description</string>
     <string name="longitude">Longitude</string>
     <string name="latitude">Latitude</string>
-    <string name="date">date</string>
+    <string name="date">Date</string>
+
+    <!-- Button Labels -->
     <string name="add_report">Add Report</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
-    <!-- ... autres chaînes de caractères ... -->
-    <string name="map_content_description">Carte des rapports validés</string>
-    <string name="add_report_button_description">Ajouter un nouveau rapport</string>
-    <string name="add_report_button_content_description">Button to add a new report</string>
-    <string name="center_map">Center Map</string>
-    <string name="center_map_button_content_description">Button to center the map on your current location</string>
-    <string name="location_unavailable">Location Unavailable</string>
-    <string name="error_adding_report_after_multiple_retries">"Error adding report after multiple retries: "</string>
-    <string name="error_fetching_validated_reports">"Error fetching validated reports: "</string>
     <string name="add_image">Add Image</string>
+    <string name="center_map">Center Map</string>
+
+    <!-- Map Related Strings -->
+    <string name="map_content_description">Map of validated reports</string>
+    <string name="center_map_button_content_description">Button to center the map on your current location</string>
+
+    <!-- Accessibility Descriptions -->
+    <string name="add_report_button_description">Add a new report</string>
+    <string name="add_report_button_content_description">Button to add a new report</string>
     <string name="image_report_description">Image Report</string>
+
+    <!-- Error Messages -->
+    <string name="location_unavailable">Location Unavailable</string>
+    <string name="error_adding_report_after_multiple_retries">"Error adding report after multiple retries : "</string>
+    <string name="error_fetching_validated_reports">"Error fetching validated reports : "</string>
+    <string name="report_added_successfully">Report added successfully !</string>
 </resources>
