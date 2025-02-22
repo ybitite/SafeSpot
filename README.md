@@ -1,6 +1,6 @@
 # SafeSpot - Real-Time Safety Reporting App
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](https://github.com/ybitite/SafeSpot/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green?style=flat-square)](https://github.com/ybitite/SafeSpot/blob/master/LICENSE)
 ## Description
 
 SafeSpot is an Android application designed to enhance community safety by allowing users to report incidents and view validated reports on a map in real-time. The app utilizes Google Maps and clustering technology to display reports efficiently, even in areas with high report density. Users can add new reports, including descriptions, locations, and images, and view the locations of validated reports.
