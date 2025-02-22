@@ -34,7 +34,6 @@
         android:id="@+id/buttonAddReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/teal_700"
         android:text="@string/add_report" />
 
     <!-- Button to cancel the report addition -->
@@ -42,9 +41,9 @@
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="@color/purple_700"
         android:text="@string/cancel"
-        android:textColor="#000000" />
+        android:textColor="@color/white" />
 
     <!-- ImageView to display the selected image -->
     <ImageView
