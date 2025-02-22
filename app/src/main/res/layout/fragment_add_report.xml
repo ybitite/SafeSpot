@@ -1,30 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- Root layout for the add report fragment -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- EditText for report description -->
     <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:hint="@string/description"
         android:inputType="textMultiLine"
         android:minLines="3" />
 
+    <!-- TextView to display longitude -->
     <TextView
         android:id="@+id/textViewLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/longitude" />
 
+    <!-- TextView to display latitude -->
     <TextView
         android:id="@+id/textViewLatitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/latitude" />
 
+    <!-- Button to add the report -->
     <Button
         android:id="@+id/buttonAddReport"
         android:layout_width="wrap_content"
@@ -32,25 +37,29 @@
         android:backgroundTint="@color/teal_700"
         android:text="@string/add_report" />
 
+    <!-- Button to cancel the report addition -->
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/red"
-        android:text="@string/cancel" />
+        android:text="@string/cancel"
+        android:textColor="#000000" />
 
-
+    <!-- ImageView to display the selected image -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:contentDescription="@string/image_report_description"
+        android:src="@drawable/image_not_found" />
 
+    <!-- Button to add an image -->
     <Button
         android:id="@+id/buttonAddImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Image" />
+        android:text="@string/add_image" />
 
 </LinearLayout>
