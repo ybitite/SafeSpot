@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeSpot</string>
+    <string name="title_home">الصفحة الرئيسية</string>
+    <string name="title_dashboard">لوحة التحكم</string>
+    <string name="description">الوصف</string>
+    <string name="longitude">خط الطول</string>
+    <string name="latitude">خط العرض</string>
+    <string name="date">التاريخ</string>
+    <string name="add_report">إضافة تقرير</string>
+    <string name="cancel">إلغاء</string>
+    <string name="refresh">تحديث</string>
+    <string name="add_image">إضافة صورة</string>
+    <string name="center_map">توسيط الخريطة</string>
+    <string name="map_content_description">خريطة التقارير المعتمدة</string>
+    <string name="center_map_button_content_description">زر لتوسيط الخريطة على موقعك الحالي</string>
+    <string name="add_report_button_description">إضافة تقرير جديد</string>
+    <string name="add_report_button_content_description">زر لإضافة تقرير جديد</string>
+    <string name="image_report_description">تقرير بالصور</string>
+    <string name="location_unavailable">الموقع غير متاح</string>
+    <string name="error_adding_report_after_multiple_retries">" : خطأ في إضافة التقرير بعد عدة محاولات"</string>
+    <string name="error_fetching_validated_reports">" : خطأ في جلب التقارير المعتمدة"</string>
+    <string name="report_added_successfully">" ! تم إضافة التقرير بنجاح"</string>
+</resources>
