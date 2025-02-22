@@ -13,7 +13,6 @@ SafeSpot is an Android application designed to enhance community safety by allow
 *   Image Support: Users can add images to their reports for better context.
 *   Clustered Map View: The app uses clustering to group nearby reports, making it easier to view areas with many incidents.
 *   Customizable Cluster Markers: Cluster markers dynamically change color and size based on the number of reports they represent.
-*   Halo Animation: Cluster markers feature a subtle halo animation to draw attention to updated clusters.
 *   Validated Reports: The app distinguishes between user-submitted reports and validated reports.
 *   User-Friendly Interface: The app is designed to be intuitive and easy to use.
 * Current location: The user can center the map on his current location.
