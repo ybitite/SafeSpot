@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeSpot</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="description">Descrizione</string>
+    <string name="longitude">Longitudine</string>
+    <string name="latitude">Latitudine</string>
+    <string name="date">Data</string>
+    <string name="add_report">Aggiungi segnalazione</string>
+    <string name="cancel">Annulla</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="add_image">Aggiungi immagine</string>
+    <string name="center_map">Centra mappa</string>
+    <string name="map_content_description">Mappa delle segnalazioni convalidate</string>
+    <string name="center_map_button_content_description">Pulsante per centrare la mappa sulla tua posizione attuale</string>
+    <string name="add_report_button_description">Aggiungi una nuova segnalazione</string>
+    <string name="add_report_button_content_description">Pulsante per aggiungere una nuova segnalazione</string>
+    <string name="image_report_description">Segnalazione con immagine</string>
+    <string name="location_unavailable">Posizione non disponibile</string>
+    <string name="error_adding_report_after_multiple_retries">"Errore nell'aggiunta della segnalazione dopo diversi tentativi : "</string>
+    <string name="error_fetching_validated_reports">"Errore nel recupero delle segnalazioni convalidate : "</string>
+    <string name="report_added_successfully">Segnalazione aggiunta con successo !</string>
+</resources>
