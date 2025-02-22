@@ -1,6 +1,6 @@
 # SafeSpot - Real-Time Safety Reporting App
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License]([https://img.shields.io/badge/License-MIT-blue.svg](https://github.com/ybitite/SafeSpot/blob/master/LICENSE))](LICENSE)
 
 ## Description
 
