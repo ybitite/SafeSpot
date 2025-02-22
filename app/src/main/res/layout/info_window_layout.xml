@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- Layout for the custom info window on the map -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -6,13 +6,16 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+    <!-- ImageView to display the report image -->
     <ImageView
         android:id="@+id/info_window_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/image_report_description"
         android:scaleType="centerCrop" />
 
+    <!-- TextView to display the report title -->
     <TextView
         android:id="@+id/info_window_title"
         android:layout_width="wrap_content"
@@ -21,6 +24,7 @@
         android:textColor="@color/black"
         android:textStyle="bold" />
 
+    <!-- TextView to display the report snippet/description -->
     <TextView
         android:id="@+id/info_window_snippet"
         android:layout_width="wrap_content"
@@ -28,6 +32,7 @@
         android:layout_marginTop="2dp"
         android:textColor="@color/black" />
 
+    <!-- TextView to display the report date -->
     <TextView
         android:id="@+id/info_window_date"
         android:layout_width="wrap_content"
