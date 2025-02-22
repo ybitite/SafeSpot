@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeSpot</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_dashboard">Tableau de bord</string>
+    <string name="description">Description</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="date">Date</string>
+    <string name="add_report">Ajouter un rapport</string>
+    <string name="cancel">Annuler</string>
+    <string name="refresh">Rafraîchir</string>
+    <string name="add_image">Ajouter une image</string>
+    <string name="center_map">Centrer la carte</string>
+    <string name="map_content_description">Carte des rapports validés</string>
+    <string name="center_map_button_content_description">Bouton pour centrer la carte sur votre position actuelle</string>
+    <string name="add_report_button_description">Ajouter un nouveau rapport</string>
+    <string name="add_report_button_content_description">Bouton pour ajouter un nouveau rapport</string>
+    <string name="image_report_description">Image du rapport</string>
+    <string name="location_unavailable">Position indisponible</string>
+    <string name="error_adding_report_after_multiple_retries">"Erreur lors de l'ajout du rapport après plusieurs tentatives : "</string>
+    <string name="error_fetching_validated_reports">"Erreur lors de la récupération des rapports validés : "</string>
+    <string name="report_added_successfully">Rapport ajouté avec succès !</string>
+</resources>
