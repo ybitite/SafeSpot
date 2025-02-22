@@ -105,7 +105,7 @@ public class ReportRemoteDataSource {
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d(API_SUCCESS_TAG, "Report added successfully!");
-                    callback.onSuccess("Report added successfully!");
+                    callback.onSuccess(context.getString(R.string.report_added_successfully));
                 } else {
                     Log.e(API_ERROR_TAG, "Error adding report: " + response.code());
                     if (retryCount < MAX_RETRIES) {
