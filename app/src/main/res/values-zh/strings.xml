@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeSpot</string>
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">仪表盘</string>
+    <string name="description">描述</string>
+    <string name="longitude">经度</string>
+    <string name="latitude">纬度</string>
+    <string name="date">日期</string>
+    <string name="add_report">添加报告</string>
+    <string name="cancel">取消</string>
+    <string name="refresh">刷新</string>
+    <string name="add_image">添加图片</string>
+    <string name="center_map">地图居中</string>
+    <string name="map_content_description">已验证报告地图</string>
+    <string name="center_map_button_content_description">将地图定位到当前位置</string>
+    <string name="add_report_button_description">添加新报告</string>
+    <string name="add_report_button_content_description">添加新报告按钮</string>
+    <string name="image_report_description">报告图片</string>
+    <string name="location_unavailable">无法获取位置</string>
+    <string name="error_adding_report_after_multiple_retries">多次重试后添加报告失败 :</string>
+    <string name="error_fetching_validated_reports">获取已验证报告失败 :</string>
+    <string name="report_added_successfully">报告添加成功！</string>
+</resources>
