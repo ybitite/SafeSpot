@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeSpot</string>
+    <string name="title_home">صفحه اصلی</string>
+    <string name="title_dashboard">داشبورد</string>
+    <string name="description">توضیحات</string>
+    <string name="longitude">طول جغرافیایی</string>
+    <string name="latitude">عرض جغرافیایی</string>
+    <string name="date">تاریخ</string>
+    <string name="add_report">افزودن گزارش</string>
+    <string name="cancel">لغو</string>
+    <string name="refresh">به‌روزرسانی</string>
+    <string name="add_image">افزودن تصویر</string>
+    <string name="center_map">مرکز نقشه</string>
+    <string name="map_content_description">نقشه گزارش‌های تایید شده</string>
+    <string name="center_map_button_content_description">دکمه برای مرکز کردن نقشه روی موقعیت فعلی شما</string>
+    <string name="add_report_button_description">افزودن گزارش جدید</string>
+    <string name="add_report_button_content_description">دکمه افزودن گزارش جدید</string>
+    <string name="image_report_description">تصویر گزارش</string>
+    <string name="location_unavailable">موقعیت مکانی در دسترس نیست</string>
+    <string name="error_adding_report_after_multiple_retries">" :: خطا در افزودن گزارش پس از تلاش‌های مکرر"</string>
+    <string name="error_fetching_validated_reports">" : خطا در دریافت گزارش‌های تایید شده"</string>
+    <string name="report_added_successfully">" ! گزارش با موفقیت اضافه شد"</string>
+</resources>
