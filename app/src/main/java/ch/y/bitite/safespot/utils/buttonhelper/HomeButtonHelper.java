@@ -3,6 +3,9 @@ package ch.y.bitite.safespot.utils.buttonhelper;
 import android.view.View;
 import android.widget.Button;
 
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import ch.y.bitite.safespot.R;
 
 /**
@@ -10,9 +13,9 @@ import ch.y.bitite.safespot.R;
  */
 public class HomeButtonHelper {
 
-    private final Button buttonAddReportHome;
-    private final Button buttonCenterMap;
-    private final Button buttonRefresh;
+    private final FloatingActionButton buttonAddReportHome;
+    private final FloatingActionButton buttonCenterMap;
+    private final FloatingActionButton buttonRefresh;
     private final HomeButtonCallback homeButtonCallback;
 
     /**
