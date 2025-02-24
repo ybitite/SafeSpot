@@ -173,7 +173,7 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
      */
     private int getClusterColor(int clusterSize) {
         if (clusterSize <= 5) {
-            return ContextCompat.getColor(context, R.color.teal_200);
+            return ContextCompat.getColor(context, R.color.green);
         } else if (clusterSize <= 10) {
             return ContextCompat.getColor(context, R.color.yellow);
         } else {
