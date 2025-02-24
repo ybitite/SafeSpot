@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".ui.home.HomeFragment">
 
     <!-- MapView to display the map -->
@@ -19,49 +20,63 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Button to add a new report -->
-    <Button
+
+    <!-- Button to center the map on the user's location -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonAddReportHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="80dp"
+        android:clickable="true"
         android:contentDescription="@string/add_report_button_content_description"
-        android:text="@string/add_report"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:maxImageSize="24dp"
+        app:useCompatPadding="false" />
 
-    <!-- Button to center the map on the user's location -->
-    <Button
+    <!-- ProgressBar to indicate loading state -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonCenterMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:contentDescription="@string/center_map_button_content_description"
-        android:text="@string/center_map"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRefreshHome"
-        app:layout_constraintEnd_toEndOf="@+id/buttonRefreshHome"
-        app:layout_constraintStart_toStartOf="@+id/buttonRefreshHome" />
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="80dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_report_button_content_description"
+        android:src="@android:drawable/ic_menu_mylocation"
+        app:backgroundTint="@color/teal_700"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:useCompatPadding="false" />
 
-    <!-- ProgressBar to indicate loading state -->
+    <!-- Button to refresh the map data -->
     <ProgressBar
         android:id="@+id/progressBarHome"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="10dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCenterMap"
-        app:layout_constraintEnd_toEndOf="@+id/buttonCenterMap"
-        app:layout_constraintStart_toStartOf="@+id/buttonCenterMap" />
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRefreshHome"
+        app:layout_constraintEnd_toEndOf="@+id/buttonRefreshHome"
+        app:layout_constraintStart_toStartOf="@+id/buttonRefreshHome"
+        app:layout_constraintTop_toTopOf="@+id/buttonRefreshHome" />
 
-    <!-- Button to refresh the map data -->
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonRefreshHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/refresh"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAddReportHome"
-        app:layout_constraintEnd_toEndOf="@+id/buttonAddReportHome"
-        app:layout_constraintStart_toStartOf="@+id/buttonAddReportHome" />
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:contentDescription="@string/center_map_button_content_description"
+        android:src="@android:drawable/ic_popup_sync"
+        app:backgroundTint="@color/teal_700"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCenterMap"
+        app:layout_constraintEnd_toEndOf="@+id/buttonCenterMap"
+        app:layout_constraintStart_toStartOf="@+id/buttonCenterMap" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
