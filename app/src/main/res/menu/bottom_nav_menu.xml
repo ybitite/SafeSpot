@@ -4,7 +4,7 @@
     <!-- Home menu item -->
     <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@android:drawable/ic_dialog_map"
         android:title="@string/title_home" />
 
     <!-- Dashboard menu item -->
