@@ -31,6 +31,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.time.Duration;
 import java.util.Objects;
 
 import ch.y.bitite.safespot.R;
@@ -59,7 +60,7 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
     private static final String KEY_LONGITUDE = "longitude";
 
     private ImageView imageView;
-    private Uri selectedImageUri;
+    private Uri selectedImageUri = null;
     private static final int REQUEST_IMAGE_PICK = 100;
     private FragmentAddReportBinding binding;
 
@@ -146,9 +147,11 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
             Log.d(TAG, "Latitude: " + location.latitude + " Longitude: " + location.longitude);
             updateLocationTextViews(location);
         } else {
+            addReportViewModel.setLocation(new LatLng(0, 0));
             // Location is null, handle this case (e.g., display a message)
             textViewLatitude.setText(R.string.location_unavailable);
             textViewLongitude.setText(R.string.location_unavailable);
+            Toast.makeText(getContext(), R.string.msg_enable_location_services, Toast.LENGTH_LONG).show();
             Log.w(TAG, "Location is null");
         }
     }
@@ -184,10 +187,21 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
             Toast.makeText(getContext(), "Please fill the description field", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (addReportViewModel.getLocation().getValue() == null) {
+            // Location is null, handle this case (e.g., display a message)
+            textViewLatitude.setText(R.string.location_unavailable);
+            textViewLongitude.setText(R.string.location_unavailable);
+            Toast.makeText(getContext(), R.string.msg_enable_location_services, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (selectedImageUri == null) {
+            Toast.makeText(getContext(), "Please upload a picketer", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         addReportViewModel.setDescription(description);
         addReportViewModel.setImageUri(selectedImageUri); // Pass the image URI to the ViewModel
 
-        addReportViewModel.setLocation(new LatLng(Objects.requireNonNull(addReportViewModel.getLocation().getValue()).latitude, addReportViewModel.getLocation().getValue().longitude));
         addReportViewModel.addReport();
 
         NavHostFragment.findNavController(this)
@@ -199,8 +213,8 @@ public class AddReportFragment extends Fragment implements LocationHelper.Locati
      * @param location The location to display.
      */
     private void updateLocationTextViews(LatLng location) {
-        textViewLatitude.setText(String.valueOf(location.latitude));
-        textViewLongitude.setText(String.valueOf(location.longitude));
+        textViewLatitude.setText("La : " + location.latitude);
+        textViewLongitude.setText("Lo : " + location.longitude);
     }
 
     /**
