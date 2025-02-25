@@ -33,4 +33,5 @@
     <string name="error_adding_report_after_multiple_retries">"Error adding report after multiple retries : "</string>
     <string name="error_fetching_validated_reports">"Error fetching validated reports : "</string>
     <string name="report_added_successfully">Report added successfully !</string>
+    <string name="msg_enable_location_services" translatable="false">Please enable your location services.</string>
 </resources>
