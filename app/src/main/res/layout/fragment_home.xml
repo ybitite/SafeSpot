@@ -50,7 +50,7 @@
         android:clickable="true"
         android:contentDescription="@string/add_report_button_content_description"
         android:src="@android:drawable/ic_menu_mylocation"
-        app:backgroundTint="@color/teal_700"
+        app:backgroundTint="@color/gray"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintEnd_toEndOf="parent"
         app:useCompatPadding="false" />
@@ -74,7 +74,7 @@
         android:clickable="true"
         android:contentDescription="@string/center_map_button_content_description"
         android:src="@android:drawable/ic_popup_sync"
-        app:backgroundTint="@color/teal_700"
+        app:backgroundTint="@color/gray"
         app:layout_constraintBottom_toTopOf="@+id/buttonCenterMap"
         app:layout_constraintEnd_toEndOf="@+id/buttonCenterMap"
         app:layout_constraintStart_toStartOf="@+id/buttonCenterMap" />
