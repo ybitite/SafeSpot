@@ -61,28 +61,8 @@
                 tools:layout_editor_absoluteX="16dp" />
 
             <!-- Button to add the report -->
-            <Button
-                android:id="@+id/buttonAddReport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/teal_700"
-                android:text="add"
-                app:layout_constraintEnd_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
             <!-- Button to cancel the report addition -->
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:backgroundTint="@color/red"
-                android:text="@string/cancel"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toStartOf="@+id/buttonAddReport"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
             <!-- ImageView to display the selected image -->
             <ImageView
@@ -104,10 +84,35 @@
                 android:id="@+id/buttonAddImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/gray"
                 android:text="upload"
+                app:cornerRadius="20dp"
                 app:layout_constraintStart_toStartOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <Button
+                android:id="@+id/buttonAddReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/teal_700"
+                android:text="add"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/red"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toStartOf="@+id/buttonAddReport"
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
