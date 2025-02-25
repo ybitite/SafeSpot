@@ -1,12 +1,17 @@
 package ch.y.bitite.safespot.repository;
 
-
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,6 +34,9 @@ public class ReportRemoteDataSource {
     private static final String API_ERROR_TAG = "API_ERROR";
     private static final String API_SUCCESS_TAG = "API_SUCCESS";
     private static final int MAX_RETRIES = 5;
+    private static final int MAX_IMAGE_WIDTH = 1024; // Maximum width for the compressed image
+    private static final int MAX_IMAGE_HEIGHT = 768; // Maximum height for the compressed image
+    private static final int IMAGE_QUALITY = 80; // Quality of the compressed image (0-100)
     private final ApiService apiService;
     private final Context context;
 
@@ -75,7 +83,12 @@ public class ReportRemoteDataSource {
      * @param callback   The callback to notify the result of the operation.
      */
     public void addReport(Report report, File file, AddReportCallback callback) {
-        addReportWithRetry(report, file, callback, 0);
+        File compressedFile = compressImage(file);
+        if (compressedFile != null) {
+            addReportWithRetry(report, compressedFile, callback, 0);
+        } else {
+            callback.onFailure("erreur");
+        }
     }
 
     /**
@@ -142,6 +155,86 @@ public class ReportRemoteDataSource {
             Log.d(API_SUCCESS_TAG, "Retrying to add report... (Attempt " + (retryCount + 1) + ")");
             addReportWithRetry(report, file, callback, retryCount);
         }, 3000); // Retry after 3 seconds
+    }
+    /**
+     * Compresses the image file.
+     *
+     * @param file The original image file.
+     * @return The compressed image file, or null if an error occurred.
+     */
+    private File compressImage(File file) {
+        if (file == null) {
+            return null;
+        }
+        try {
+            // Decode the file into a Bitmap
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+            // Calculate the scaling factor
+            int scale = 1;
+            while (options.outWidth / scale / 2 >= MAX_IMAGE_WIDTH &&
+                    options.outHeight / scale / 2 >= MAX_IMAGE_HEIGHT) {
+                scale *= 2;
+            }
+
+            // Decode the file with the scaling factor
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = scale;
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+            // Resize the bitmap if necessary
+            bitmap = resizeBitmap(bitmap, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
+
+            // Compress the bitmap
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, bos);
+            byte[] bitmapData = bos.toByteArray();
+
+            // Create a new file for the compressed image
+            File compressedFile = new File(file.getParentFile(), "compressed_" + file.getName());
+            FileOutputStream fos = new FileOutputStream(compressedFile);
+            fos.write(bitmapData);
+            fos.flush();
+            fos.close();
+
+            // Recycle the bitmap to free memory
+            bitmap.recycle();
+
+            return compressedFile;
+        } catch (IOException e) {
+            Log.e(API_ERROR_TAG, "Error compressing image", e);
+            return null;
+        }
+    }
+
+    /**
+     * Resizes the bitmap to the specified maximum width and height.
+     *
+     * @param bitmap    The bitmap to resize.
+     * @param maxWidth  The maximum width.
+     * @param maxHeight The maximum height.
+     * @return The resized bitmap.
+     */
+    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        if (bitmap == null) {
+            return null;
+        }
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        if (width <= maxWidth && height <= maxHeight) {
+            return bitmap;
+        }
+
+        float ratio = Math.min((float) maxWidth / width, (float) maxHeight / height);
+        int newWidth = Math.round(ratio * width);
+        int newHeight = Math.round(ratio * height);
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+        bitmap.recycle();
+        return resizedBitmap;
     }
 
     /**
