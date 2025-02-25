@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
      * @param location The location to center the map on.
      */
     private void centerMap(LatLng location) {
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 13.5F));
     }
 
     /**
