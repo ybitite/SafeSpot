@@ -1,64 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Root layout for the add report fragment -->
+<!-- EditText for report description -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/teal_700"
+    android:orientation="vertical">
 
-    <!-- EditText for report description -->
-    <EditText
-        android:id="@+id/editTextDescription"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:hint="@string/description"
-        android:inputType="textMultiLine"
-        android:minLines="3" />
+        android:layout_margin="10dp"
+        android:elevation="15dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="20dp">
 
-    <!-- TextView to display longitude -->
-    <TextView
-        android:id="@+id/textViewLongitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/longitude" />
 
-    <!-- TextView to display latitude -->
-    <TextView
-        android:id="@+id/textViewLatitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/latitude" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Button to add the report -->
-    <Button
-        android:id="@+id/buttonAddReport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_report" />
 
-    <!-- Button to cancel the report addition -->
-    <Button
-        android:id="@+id/buttonCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/purple_700"
-        android:text="@string/cancel"
-        android:textColor="@color/white" />
+            <EditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/description"
+                android:inputType="textMultiLine"
+                android:maxLength="1000"
+                android:maxLines="7"
+                android:minLines="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ImageView to display the selected image -->
+            <!-- TextView to display longitude -->
+            <TextView
+                android:id="@+id/textViewLongitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/longitude"
+                android:textColor="@color/teal_700"
+                app:layout_constraintStart_toStartOf="@+id/editTextDescription"
+                app:layout_constraintTop_toBottomOf="@+id/editTextDescription" />
+
+            <!-- TextView to display latitude -->
+            <TextView
+                android:id="@+id/textViewLatitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/latitude"
+                android:textColor="@color/teal_700"
+                app:layout_constraintTop_toBottomOf="@+id/textViewLongitude"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <!-- Button to add the report -->
+            <Button
+                android:id="@+id/buttonAddReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/teal_700"
+                android:text="add"
+                app:layout_constraintEnd_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <!-- Button to cancel the report addition -->
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/red"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@+id/buttonAddReport"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <!-- ImageView to display the selected image -->
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/image_report_description"
+                android:scaleType="centerInside"
+                android:src="@drawable/image_not_found"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewLatitude" />
+
+            <!-- Button to add an image -->
+            <Button
+                android:id="@+id/buttonAddImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/gray"
+                android:text="upload"
+                app:layout_constraintStart_toStartOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/image_report_description"
-        android:src="@drawable/image_not_found" />
-
-    <!-- Button to add an image -->
-    <Button
-        android:id="@+id/buttonAddImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_image" />
-
+        android:id="@+id/imageViewIcon"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/emergency_icon" />
 </LinearLayout>
