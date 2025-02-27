@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.Button;
 
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import ch.y.bitite.safespot.R;
@@ -13,7 +14,7 @@ import ch.y.bitite.safespot.R;
  */
 public class HomeButtonHelper {
 
-    private final FloatingActionButton buttonAddReportHome;
+    private final ExtendedFloatingActionButton buttonAddReportHome;
     private final FloatingActionButton buttonCenterMap;
     private final FloatingActionButton buttonRefresh;
     private final HomeButtonCallback homeButtonCallback;
