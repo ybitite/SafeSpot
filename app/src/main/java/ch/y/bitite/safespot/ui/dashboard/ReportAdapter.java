@@ -2,12 +2,8 @@ package ch.y.bitite.safespot.ui.dashboard;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,11 +13,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.InfoWindowLayoutBinding;
 import ch.y.bitite.safespot.databinding.ItemReportBinding;
 import ch.y.bitite.safespot.model.ReportValidated;
-import ch.y.bitite.safespot.ui.FullScreenImageActivity;
 import ch.y.bitite.safespot.utils.ImageLoader;
 import dagger.hilt.android.scopes.FragmentScoped;
 
@@ -29,7 +23,7 @@ import dagger.hilt.android.scopes.FragmentScoped;
  * Adapter for displaying a list of validated reports in a RecyclerView.
  */
 @FragmentScoped
-public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
+public class ReportAdapter extends RecyclerView.Adapter<ReportViewHolder> {
 
     private List<ReportValidated> reports;
     private final ImageLoader imageLoader;
@@ -76,10 +70,10 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         recyclerView = (RecyclerView) parent;
         if (viewType == VIEW_TYPE_DETAIL) {
             InfoWindowLayoutBinding detailBinding = InfoWindowLayoutBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-            return new ReportViewHolder(detailBinding);
+            return new ReportViewHolder(detailBinding, imageLoader, context);
         } else {
             ItemReportBinding simpleBinding = ItemReportBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-            return new ReportViewHolder(simpleBinding);
+            return new ReportViewHolder(simpleBinding, imageLoader, context);
         }
     }
 
@@ -136,101 +130,6 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
                     layoutManager.scrollToPositionWithOffset(position, 0);
                 }
             });
-        }
-    }
-
-    /**
-     * ViewHolder for a single report item.
-     */
-    public class ReportViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewDescription;
-        private TextView textViewLatitude;
-        private TextView textViewLongitude;
-        private TextView textViewDateTime;
-        private ImageView imageViewReport;
-        private TextView info_window_title;
-        private TextView info_window_date;
-        private ImageView info_window_image;
-
-        /**
-         * Constructor for ReportViewHolder.
-         *
-         * @param binding The ItemReportBinding for the report item.
-         */
-        public ReportViewHolder(@NonNull ItemReportBinding binding) {
-            super(binding.getRoot());
-            textViewDescription = binding.textViewDescription;
-            textViewLatitude = binding.textViewLatitude;
-            textViewLongitude = binding.textViewLongitude;
-            textViewDateTime = binding.textViewDateTime;
-            imageViewReport = binding.imageViewReport;
-        }
-
-        public ReportViewHolder(@NonNull InfoWindowLayoutBinding binding) {
-            super(binding.getRoot());
-            info_window_title = binding.infoWindowTitle;
-            info_window_date = binding.infoWindowDate;
-            info_window_image = binding.infoWindowImage;
-        }
-
-        public void bindSimple(ReportValidated report) {
-            textViewDescription.setText(report.getDescription());
-            textViewLatitude.setText(String.valueOf(report.getLatitude()));
-            textViewLongitude.setText(String.valueOf(report.getLongitude()));
-            String dateTimeFormatted = report.getDateTimeString().replace("T", " ");
-            textViewDateTime.setText(dateTimeFormatted);
-
-            // Load the image using ImageLoader
-            imageLoader.loadImage(report.getImage(), imageViewReport, new ImageLoader.ImageLoadCallback() {
-                @Override
-                public void onImageLoaded() {
-                    Log.e("ReportAdapter", "Image loaded");
-
-                }
-
-                @Override
-                public void onImageLoadFailed() {
-                    Log.e("ReportAdapter", "Failed to load image");
-
-                }
-            });
-        }
-
-        public void bindDetail(ReportValidated report) {
-            info_window_title.setText(report.getDescription());
-            String dateTimeFormatted = report.getDateTimeString().replace("T", " ");
-            info_window_date.setText(dateTimeFormatted);
-            // Load the image using ImageLoader
-            imageLoader.loadImage(report.getImage(), info_window_image, new ImageLoader.ImageLoadCallback() {
-                @Override
-                public void onImageLoaded() {
-                    Log.e("ReportAdapter", "Image loaded");
-
-                }
-
-                @Override
-                public void onImageLoadFailed() {
-                    Log.e("ReportAdapter", "Failed to load image");
-
-                }
-            });
-        }
-
-        public void setImageViewClickListener(String imageUrl) {
-            if (imageViewReport != null) {
-                imageViewReport.setOnClickListener(v -> {
-                    Intent intent = new Intent(context, FullScreenImageActivity.class);
-                    intent.putExtra(FullScreenImageActivity.EXTRA_IMAGE_URL, imageUrl);
-                    context.startActivity(intent);
-                });
-            }
-            if (info_window_image != null) {
-                info_window_image.setOnClickListener(v -> {
-                    Intent intent = new Intent(context, FullScreenImageActivity.class);
-                    intent.putExtra(FullScreenImageActivity.EXTRA_IMAGE_URL, imageUrl);
-                    context.startActivity(intent);
-                });
-            }
         }
     }
 }
