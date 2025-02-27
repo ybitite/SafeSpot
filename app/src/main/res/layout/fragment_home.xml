@@ -21,8 +21,7 @@
 
     <!-- Button to add a new report -->
 
-    <!-- Button to center the map on the user's location -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/buttonAddReportHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,16 +29,14 @@
         android:layout_marginBottom="80dp"
         android:clickable="true"
         android:contentDescription="@string/add_report_button_content_description"
-        android:paddingTop="10dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="10dp"
-        android:src="@android:drawable/ic_input_add"
+        android:text="@string/add"
+        app:icon="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toStartOf="parent"
         app:maxImageSize="24dp"
         app:useCompatPadding="false" />
 
-    <!-- ProgressBar to indicate loading state -->
+    <!-- Button to center the map on the user's location -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonCenterMap"
@@ -55,7 +52,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:useCompatPadding="false" />
 
-    <!-- Button to refresh the map data -->
+    <!-- ProgressBar to indicate loading state -->
+
     <ProgressBar
         android:id="@+id/progressBarHome"
         android:layout_width="100dp"
@@ -65,6 +63,8 @@
         app:layout_constraintEnd_toEndOf="@+id/buttonRefreshHome"
         app:layout_constraintStart_toStartOf="@+id/buttonRefreshHome"
         app:layout_constraintTop_toTopOf="@+id/buttonRefreshHome" />
+
+    <!-- Button to refresh the map data -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonRefreshHome"
