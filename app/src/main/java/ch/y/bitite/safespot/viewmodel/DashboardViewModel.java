@@ -3,9 +3,12 @@ package ch.y.bitite.safespot.viewmodel;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,8 +32,12 @@ public class DashboardViewModel extends ViewModel {
     private static final String TAG = "DashboardViewModel";
     private final ReportRepository repository;
     private final MutableLiveData<List<ReportValidated>> validatedReports = new MutableLiveData<>();
+    private final MediatorLiveData<List<ReportValidated>> filteredReports = new MediatorLiveData<>();
     private static final long REFRESH_INTERVAL = TimeUnit.HOURS.toMillis(2); // 2 hours
     private final CompositeDisposable disposables = new CompositeDisposable();
+    private boolean isSortedByDate = false; // Ajout de la variable pour suivre l'état du tri
+    private boolean isAscending = false; // Ajout de la variable pour suivre l'ordre du tri
+    private String currentSearchQuery = "";
 
     /**
      * Constructor for DashboardViewModel.
@@ -45,8 +52,10 @@ public class DashboardViewModel extends ViewModel {
         repository.getAllValidatedReports().observeForever(reports -> {
             if (reports != null) {
                 validatedReports.setValue(reports);
+                filterReports(currentSearchQuery);
             }
         });
+        filteredReports.addSource(validatedReports, reports -> filterReports(currentSearchQuery));
 
         // Initial fetch of validated reports
         fetchValidatedReports();
@@ -60,7 +69,7 @@ public class DashboardViewModel extends ViewModel {
      * @return The validated reports LiveData.
      */
     public LiveData<List<ReportValidated>> getValidatedReports() {
-        return validatedReports;
+        return filteredReports;
     }
 
 
@@ -73,7 +82,11 @@ public class DashboardViewModel extends ViewModel {
             @Override
             public void onSuccess(List<ReportValidated> reports) {
                 Log.d(TAG, "fetchValidatedReports: Success - Received " + reports.size() + " reports");
-                validatedReports.setValue(reports);
+                if (isSortedByDate) {
+                    sortReportsByDate();
+                } else {
+                    validatedReports.setValue(reports);
+                }
             }
 
             @Override
@@ -107,5 +120,42 @@ public class DashboardViewModel extends ViewModel {
         Log.d(TAG, "onCleared: ViewModel is being cleared");
         // Remove callbacks to prevent memory leaks
         disposables.clear();
+    }
+
+    /**
+     * Sorts the reports by date (most recent first).
+     */
+    public void sortReportsByDate() {
+        List<ReportValidated> reports = validatedReports.getValue();
+        if (reports != null) {
+            if (isAscending) {
+                // Sort the reports by date in ascending order (oldest first)
+                reports.sort(Comparator.comparing(ReportValidated::getDateTimeString));
+            } else {
+                // Sort the reports by date in descending order (most recent first)
+                reports.sort((r1, r2) -> r2.getDateTimeString().compareTo(r1.getDateTimeString()));
+            }
+            validatedReports.setValue(reports);
+            filterReports(currentSearchQuery);
+            isAscending = !isAscending; // Toggle the sorting order
+            isSortedByDate = true;
+        } else {
+            isSortedByDate = false;
+        }
+    }
+
+    public void filterReports(String query) {
+        currentSearchQuery = query;
+        List<ReportValidated> allReports = validatedReports.getValue();
+        List<ReportValidated> filteredList = new ArrayList<>();
+
+        if (allReports != null) {
+            for (ReportValidated report : allReports) {
+                if (report.getDescription().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(report);
+                }
+            }
+        }
+        filteredReports.setValue(filteredList);
     }
 }
