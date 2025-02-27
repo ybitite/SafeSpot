@@ -1,6 +1,8 @@
 package ch.y.bitite.safespot.ui.home;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentHomeBinding;
 import ch.y.bitite.safespot.model.ReportClusterItem;
 import ch.y.bitite.safespot.model.ReportValidated;
+import ch.y.bitite.safespot.ui.FullScreenImageActivity;
 import ch.y.bitite.safespot.utils.buttonhelper.HomeButtonHelper;
 import ch.y.bitite.safespot.utils.LocationHelper;
 import ch.y.bitite.safespot.viewmodel.AddReportViewModel;
@@ -148,14 +151,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         mClusterManager.getMarkerCollection().setInfoWindowAdapter(customInfoWindowAdapter);
 
         // Set listeners for info window clicks
-        mClusterManager.setOnClusterItemInfoWindowClickListener(marker ->
-                Toast.makeText(getContext(),
-                        "Info window clicked.",
-                        Toast.LENGTH_SHORT).show());
-        mClusterManager.setOnClusterItemInfoWindowLongClickListener(marker ->
-                Toast.makeText(getContext(),
-                        "Info window long pressed.",
-                        Toast.LENGTH_SHORT).show());
+        mClusterManager.setOnClusterItemInfoWindowClickListener(marker -> {
+            // Assuming 'marker' is a custom object that holds the image URL
+            // You need to replace this with how you get the URL from your marker object
+            if (marker != null) {
+                String imageUrl = marker.getImageFileName(); // Replace getImageUrl() with the actual method to get the URL
+
+                // Get the context from the fragment or activity
+                Context context = getContext(); // If you are in a Fragment
+                // If you are in an Activity, you can use 'this' instead of 'getContext()'
+
+                if (context != null) {
+                    Intent intent = new Intent(context, FullScreenImageActivity.class);
+                    intent.putExtra(FullScreenImageActivity.EXTRA_IMAGE_URL, imageUrl);
+                    context.startActivity(intent);
+                } else {
+                    Log.e("MapFragment", "Context is null, cannot start FullScreenImageActivity");
+                }
+            } else {
+                Log.e("MapFragment", "Marker is not an instance of MyClusterItem");
+            }
+        });
 
         // Set initial map location and check for location permissions
         LatLng initialLocation = new LatLng(46.94809, 7.44744);
