@@ -1,9 +1,13 @@
 package ch.y.bitite.safespot.ui.dashboard;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button; // Importation de Button
+import android.widget.EditText; // Importation de EditText
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +20,7 @@ import javax.inject.Inject;
 
 import ch.y.bitite.safespot.R;
 import ch.y.bitite.safespot.databinding.FragmentDashboardBinding;
+import ch.y.bitite.safespot.utils.buttonhelper.DashboardButtonCallback;
 import ch.y.bitite.safespot.utils.buttonhelper.DashboardButtonHelper;
 import ch.y.bitite.safespot.viewmodel.DashboardViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -25,11 +30,13 @@ import dagger.hilt.android.AndroidEntryPoint;
  * This fragment displays a list of validated reports.
  */
 @AndroidEntryPoint
-public class DashboardFragment extends Fragment implements DashboardButtonHelper.DashboardButtonCallback {
+public class DashboardFragment extends Fragment implements DashboardButtonCallback {
     private DashboardViewModel dashboardViewModel;
     @Inject
     ReportAdapter adapter;
     private FragmentDashboardBinding binding;
+    private Button sortButton; // Déclaration du bouton de tri
+    private EditText searchEditText; // Déclaration du champ de recherche
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -48,13 +55,32 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        sortButton = root.findViewById(R.id.sort_by_date_button);
+        searchEditText = root.findViewById(R.id.search_edit_text);
+
         // Set up the RecyclerView with a LinearLayoutManager and the ReportAdapter
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
 
         // Set up the button listeners using DashboardButtonHelper
-        DashboardButtonHelper buttonHelper = new DashboardButtonHelper(root, this);
+        DashboardButtonHelper buttonHelper = new DashboardButtonHelper(root, (DashboardButtonCallback) this);
         buttonHelper.setupDashboardButtonListeners();
+
+        // Set up the search functionality
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                dashboardViewModel.filterReports(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         return root;
     }
@@ -74,7 +100,7 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
         dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
         // Observe the LiveData of validated reports and update the adapter when the data changes
-        dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> adapter.updateReports(reports));
+        dashboardViewModel.getValidatedReports().observe(getViewLifecycleOwner(), reports -> adapter.setReports(reports));
     }
 
     /**
@@ -105,5 +131,11 @@ public class DashboardFragment extends Fragment implements DashboardButtonHelper
         if(dashboardViewModel.getValidatedReports().getValue() != null){
             dashboardViewModel.fetchValidatedReports();
         }
+    }
+
+    // Ajout de la méthode onSortClicked
+    @Override
+    public void onSortClicked() {
+        dashboardViewModel.sortReportsByDate();
     }
 }
