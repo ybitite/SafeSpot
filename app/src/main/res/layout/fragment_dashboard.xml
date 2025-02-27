@@ -8,43 +8,89 @@
 
 
     <!-- RecyclerView to display the list of reports -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/sort_by_date_button"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:padding="10dp"
+            android:text="@string/sort_date"
+            app:backgroundTint="@color/gray"
+            app:cornerRadius="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sort_by_date_button"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Button to refresh the list of reports -->
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <!-- Button to refresh the list of reports -->
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/refreshButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="5dp"
-        android:backgroundTint="@color/teal_200"
-        android:text="@string/refresh"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAddReport"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="HardcodedText" />
+        android:clickable="true"
+        android:contentDescription="@string/center_map_button_content_description"
+        android:src="@android:drawable/ic_popup_sync"
+        app:backgroundTint="@color/gray"
+        app:fabSize="auto"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonAddReport"
+        app:layout_constraintEnd_toStartOf="@+id/buttonAddReport"
+        app:layout_constraintTop_toTopOf="@+id/buttonAddReport" />
 
     <!-- Button to navigate to the add report screen -->
-    <Button
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonAddReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/teal_200"
-        android:text="Add Report"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_report_button_content_description"
+        android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="HardcodedText" />
+        app:maxImageSize="24dp"
+        app:useCompatPadding="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
