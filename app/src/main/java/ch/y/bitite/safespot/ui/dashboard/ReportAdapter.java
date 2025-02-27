@@ -1,6 +1,8 @@
 package ch.y.bitite.safespot.ui.dashboard;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,13 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.y.bitite.safespot.R;
+import ch.y.bitite.safespot.databinding.InfoWindowLayoutBinding;
+import ch.y.bitite.safespot.databinding.ItemReportBinding;
 import ch.y.bitite.safespot.model.ReportValidated;
+import ch.y.bitite.safespot.ui.FullScreenImageActivity;
 import ch.y.bitite.safespot.utils.ImageLoader;
 import dagger.hilt.android.scopes.FragmentScoped;
 
@@ -26,6 +33,11 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
 
     private List<ReportValidated> reports;
     private final ImageLoader imageLoader;
+    private static final int VIEW_TYPE_SIMPLE = 0;
+    private static final int VIEW_TYPE_DETAIL = 1;
+    private int expandedPosition = RecyclerView.NO_POSITION;
+    private Context context;
+    private RecyclerView recyclerView;
 
     /**
      * Constructor for ReportAdapter.
@@ -43,7 +55,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
      * @param reports The new list of reports.
      */
     @SuppressLint("NotifyDataSetChanged")
-    public void updateReports(List<ReportValidated> reports) {
+    public void setReports(List<ReportValidated> reports) {
         this.reports = reports;
         notifyDataSetChanged();
     }
@@ -60,8 +72,15 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @NonNull
     @Override
     public ReportViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ch.y.bitite.safespot.databinding.ItemReportBinding binding = ch.y.bitite.safespot.databinding.ItemReportBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new ReportViewHolder(binding);
+        context = parent.getContext();
+        recyclerView = (RecyclerView) parent;
+        if (viewType == VIEW_TYPE_DETAIL) {
+            InfoWindowLayoutBinding detailBinding = InfoWindowLayoutBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+            return new ReportViewHolder(detailBinding);
+        } else {
+            ItemReportBinding simpleBinding = ItemReportBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+            return new ReportViewHolder(simpleBinding);
+        }
     }
 
     /**
@@ -74,26 +93,24 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         ReportValidated currentReport = reports.get(position);
-        holder.textViewDescription.setText(currentReport.getDescription());
-        holder.textViewLatitude.setText(String.valueOf(currentReport.getLatitude()));
-        holder.textViewLongitude.setText(String.valueOf(currentReport.getLongitude()));
-        holder.textViewDateTime.setText(String.valueOf(currentReport.getDateTimeString()));
-
-        // Load the image using ImageLoader
-        imageLoader.loadImage(currentReport.getImage(), holder.imageViewReport, new ImageLoader.ImageLoadCallback() {
-            @Override
-            public void onImageLoaded() {
-                Log.e("ReportAdapter", "Image loaded");
-
-            }
-
-            @Override
-            public void onImageLoadFailed() {
-                Log.e("ReportAdapter", "Failed to load image");
-
+        if (holder.getItemViewType() == VIEW_TYPE_DETAIL) {
+            holder.bindDetail(currentReport);
+        } else {
+            holder.bindSimple(currentReport);
+        }
+        holder.itemView.setOnClickListener(v -> {
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                if (expandedPosition == adapterPosition) {
+                    expandedPosition = RecyclerView.NO_POSITION;
+                } else {
+                    expandedPosition = adapterPosition;
+                    scrollToPosition(adapterPosition);
+                }
+                notifyItemChanged(adapterPosition);
             }
         });
-
+        holder.setImageViewClickListener(currentReport.getImage());
     }
 
     /**
@@ -106,28 +123,114 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         return reports == null ? 0 : reports.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position == expandedPosition ? VIEW_TYPE_DETAIL : VIEW_TYPE_SIMPLE;
+    }
+
+    private void scrollToPosition(int position) {
+        if (recyclerView != null) {
+            recyclerView.post(() -> {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    layoutManager.scrollToPositionWithOffset(position, 0);
+                }
+            });
+        }
+    }
+
     /**
      * ViewHolder for a single report item.
      */
-    public static class ReportViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textViewDescription;
-        private final TextView textViewLatitude;
-        private final TextView textViewLongitude;
-        private final TextView textViewDateTime;
-        private final ImageView imageViewReport;
+    public class ReportViewHolder extends RecyclerView.ViewHolder {
+        private TextView textViewDescription;
+        private TextView textViewLatitude;
+        private TextView textViewLongitude;
+        private TextView textViewDateTime;
+        private ImageView imageViewReport;
+        private TextView info_window_title;
+        private TextView info_window_date;
+        private ImageView info_window_image;
 
         /**
          * Constructor for ReportViewHolder.
          *
          * @param binding The ItemReportBinding for the report item.
          */
-        public ReportViewHolder(@NonNull ch.y.bitite.safespot.databinding.ItemReportBinding binding) {
+        public ReportViewHolder(@NonNull ItemReportBinding binding) {
             super(binding.getRoot());
             textViewDescription = binding.textViewDescription;
             textViewLatitude = binding.textViewLatitude;
             textViewLongitude = binding.textViewLongitude;
             textViewDateTime = binding.textViewDateTime;
             imageViewReport = binding.imageViewReport;
+        }
+
+        public ReportViewHolder(@NonNull InfoWindowLayoutBinding binding) {
+            super(binding.getRoot());
+            info_window_title = binding.infoWindowTitle;
+            info_window_date = binding.infoWindowDate;
+            info_window_image = binding.infoWindowImage;
+        }
+
+        public void bindSimple(ReportValidated report) {
+            textViewDescription.setText(report.getDescription());
+            textViewLatitude.setText(String.valueOf(report.getLatitude()));
+            textViewLongitude.setText(String.valueOf(report.getLongitude()));
+            String dateTimeFormatted = report.getDateTimeString().replace("T", " ");
+            textViewDateTime.setText(dateTimeFormatted);
+
+            // Load the image using ImageLoader
+            imageLoader.loadImage(report.getImage(), imageViewReport, new ImageLoader.ImageLoadCallback() {
+                @Override
+                public void onImageLoaded() {
+                    Log.e("ReportAdapter", "Image loaded");
+
+                }
+
+                @Override
+                public void onImageLoadFailed() {
+                    Log.e("ReportAdapter", "Failed to load image");
+
+                }
+            });
+        }
+
+        public void bindDetail(ReportValidated report) {
+            info_window_title.setText(report.getDescription());
+            String dateTimeFormatted = report.getDateTimeString().replace("T", " ");
+            info_window_date.setText(dateTimeFormatted);
+            // Load the image using ImageLoader
+            imageLoader.loadImage(report.getImage(), info_window_image, new ImageLoader.ImageLoadCallback() {
+                @Override
+                public void onImageLoaded() {
+                    Log.e("ReportAdapter", "Image loaded");
+
+                }
+
+                @Override
+                public void onImageLoadFailed() {
+                    Log.e("ReportAdapter", "Failed to load image");
+
+                }
+            });
+        }
+
+        public void setImageViewClickListener(String imageUrl) {
+            if (imageViewReport != null) {
+                imageViewReport.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, FullScreenImageActivity.class);
+                    intent.putExtra(FullScreenImageActivity.EXTRA_IMAGE_URL, imageUrl);
+                    context.startActivity(intent);
+                });
+            }
+            if (info_window_image != null) {
+                info_window_image.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, FullScreenImageActivity.class);
+                    intent.putExtra(FullScreenImageActivity.EXTRA_IMAGE_URL, imageUrl);
+                    context.startActivity(intent);
+                });
+            }
         }
     }
 }
