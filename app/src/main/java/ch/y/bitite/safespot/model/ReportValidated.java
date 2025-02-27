@@ -1,5 +1,7 @@
 package ch.y.bitite.safespot.model;
 
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -63,6 +65,11 @@ public class ReportValidated {
     @SerializedName("date_Time_Validation")
     private final String dateTimeValidationString;
 
+    @Ignore
+    private ZonedDateTime dateTime;
+    @Ignore
+    private ZonedDateTime dateTimeValidation;
+
     /**
      * Constructs a new ReportValidated object.
      *
@@ -84,8 +91,8 @@ public class ReportValidated {
         this.video = video;
         this.comment = comment;
         this.dateTimeValidationString = dateTimeValidationString;
-        parseDateTime(dateTimeString);
-        parseDateTime(dateTimeValidationString);
+        parseDateTime(dateTimeString, true);
+        parseDateTime(dateTimeValidationString, false);
     }
 
     /**
@@ -93,17 +100,37 @@ public class ReportValidated {
      * This method is marked with {@link Ignore} because it's not a Room database field.
      *
      * @param dateTimeString The date and time string to parse.
+     * @param isDateTime     Indicates whether it's the creation date or validation date.
      */
     @Ignore
-    private void parseDateTime(String dateTimeString) {
-        if (dateTimeString == null) {
+    private void parseDateTime(String dateTimeString, boolean isDateTime) {
+        if (dateTimeString == null || dateTimeString.isEmpty()) {
+            if (isDateTime) {
+                dateTime = null;
+            } else {
+                dateTimeValidation = null;
+            }
             return;
         }
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withLocale(Locale.getDefault()).withZone(ZoneId.of("UTC"));
-            ZonedDateTime.parse(dateTimeString, formatter).toInstant();
-        } catch (DateTimeParseException ignored) {
-            // Ignore parsing errors.
+            // **FORMAT CORRECT :**
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.getDefault()).withZone(ZoneId.of("UTC"));
+            if (isDateTime) {
+                dateTime = ZonedDateTime.parse(dateTimeString, formatter);
+                Log.d("ReportValidated", "Date parsed successfully: " + dateTimeString);
+            } else {
+                dateTimeValidation = ZonedDateTime.parse(dateTimeString, formatter);
+                Log.d("ReportValidated", "Date validation parsed successfully: " + dateTimeString);
+            }
+        } catch (DateTimeParseException e) {
+            // Log the error or handle it appropriately
+            System.err.println("Error parsing date: " + dateTimeString + " - " + e.getMessage());
+            Log.e("ReportValidated", "Error parsing date: " + dateTimeString + " - " + e.getMessage());
+            if (isDateTime) {
+                dateTime = null;
+            } else {
+                dateTimeValidation = null;
+            }
         }
     }
 
@@ -231,6 +258,15 @@ public class ReportValidated {
      */
     public String getDateTimeValidationString() {
         return dateTimeValidationString;
+    }
+
+    /**
+     * Gets the date and time when the report was created, as a ZonedDateTime object.
+     *
+     * @return The date and time as a ZonedDateTime.
+     */
+    public ZonedDateTime getDate() {
+        return dateTime;
     }
 
     /**
