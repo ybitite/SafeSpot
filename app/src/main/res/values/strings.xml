@@ -34,4 +34,8 @@
     <string name="error_fetching_validated_reports">"Error fetching validated reports : "</string>
     <string name="report_added_successfully">Report added successfully !</string>
     <string name="msg_enable_location_services" translatable="false">Please enable your location services.</string>
+    <string name="add" translatable="false">ADD</string>
+    <string name="sort_date" translatable="false">Date ▲ ▼</string>
+    <string name="search_hint" translatable="false">Rechercher...</string>
+    <string name="full_screen_image" translatable="false">full screen image</string>
 </resources>
