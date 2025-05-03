@@ -74,10 +74,14 @@ public class ReportRepository {
      * @param report     The Report object to add.
      * @param imageUri   The URI of the image associated with the report.
      * @param callback   The callback to notify the result of the operation.
+     * @param audioFile The audio file associated with the report.
      */
-    public void addReport(Report report, Uri imageUri, AddReportCallback callback) {
-        File file = fileDataSource.getFileFromUri(imageUri);
-        remoteDataSource.addReport(report, file, new ReportRemoteDataSource.AddReportCallback() {
+    public void addReport(Report report, Uri imageUri, File audioFile, AddReportCallback callback) {
+        File imageFile = null;
+        if (imageUri != null) {
+            imageFile = fileDataSource.getFileFromUri(imageUri);
+        }
+        remoteDataSource.addReport(report, imageFile, audioFile, new ReportRemoteDataSource.AddReportCallback() {
             @Override
             public void onSuccess(String message) {
                 Log.d(TAG, "Report added successfully!");
