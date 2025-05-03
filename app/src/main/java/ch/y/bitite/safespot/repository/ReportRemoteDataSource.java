@@ -3,7 +3,6 @@ package ch.y.bitite.safespot.repository;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -79,13 +78,17 @@ public class ReportRemoteDataSource {
      * Adds a new report to the API.
      *
      * @param report     The Report object to add.
-     * @param file       The file of the image.
+     * @param imageFile  The file of the image.
+     * @param audioFile The file of the audio.
      * @param callback   The callback to notify the result of the operation.
      */
-    public void addReport(Report report, File file, AddReportCallback callback) {
-        File compressedFile = compressImage(file);
-        if (compressedFile != null) {
-            addReportWithRetry(report, compressedFile, callback, 0);
+    public void addReport(Report report, File imageFile, File audioFile, AddReportCallback callback) {
+        File compressedImageFile = null;
+        if (imageFile != null) {
+            compressedImageFile = compressImage(imageFile);
+        }
+        if (compressedImageFile != null || imageFile == null) {
+            addReportWithRetry(report, compressedImageFile, audioFile, callback, 0);
         } else {
             callback.onFailure("erreur");
         }
@@ -95,15 +98,21 @@ public class ReportRemoteDataSource {
      * Adds a new report to the API with retry logic.
      *
      * @param report     The Report object to add.
-     * @param file       The file of the image.
+     * @param imageFile  The file of the image.
+     * @param audioFile The file of the audio.
      * @param callback   The callback to notify the result of the operation.
      * @param retryCount The current retry count.
      */
-    private void addReportWithRetry(Report report, File file, AddReportCallback callback, int retryCount) {
+    private void addReportWithRetry(Report report, File imageFile, File audioFile, AddReportCallback callback, int retryCount) {
         MultipartBody.Part imagePart = null;
-        if (file != null) {
-            RequestBody requestFile = RequestBody.create(file, MediaType.parse("multipart/form-data"));
-            imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+        if (imageFile != null) {
+            RequestBody requestImageFile = RequestBody.create(imageFile, MediaType.parse("multipart/form-data"));
+            imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), requestImageFile);
+        }
+        MultipartBody.Part audioPart = null;
+        if (audioFile != null) {
+            RequestBody requestAudioFile = RequestBody.create(audioFile, MediaType.parse("multipart/form-data"));
+            audioPart = MultipartBody.Part.createFormData("audio", audioFile.getName(), requestAudioFile);
         }
 
         RequestBody description = RequestBody.create(report.getDescription() != null ? report.getDescription() : "", MediaType.parse("text/plain"));
@@ -111,7 +120,7 @@ public class ReportRemoteDataSource {
         RequestBody latitude = RequestBody.create(String.valueOf(report.getLatitude()), MediaType.parse("text/plain"));
         RequestBody dateTime = RequestBody.create(report.getDateTimeUtc() != null ? report.getDateTimeUtc() : "", MediaType.parse("text/plain"));
 
-        Call<Void> call = apiService.addReport(imagePart, description, longitude, latitude, dateTime);
+        Call<Void> call = apiService.addReport(imagePart, audioPart, description, longitude, latitude, dateTime);
 
         call.enqueue(new Callback<Void>() {
             @Override
@@ -122,7 +131,7 @@ public class ReportRemoteDataSource {
                 } else {
                     Log.e(API_ERROR_TAG, "Error adding report: " + response.code());
                     if (retryCount < MAX_RETRIES) {
-                        retryAddReport(report, file, callback, retryCount + 1);
+                        retryAddReport(report, imageFile, audioFile, callback, retryCount + 1);
                     } else {
                         callback.onFailure(context.getString(R.string.error_adding_report_after_multiple_retries) + response.code());
                     }
@@ -133,7 +142,7 @@ public class ReportRemoteDataSource {
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e(API_ERROR_TAG, "Error adding report", t);
                 if (retryCount < MAX_RETRIES) {
-                    retryAddReport(report, file, callback, retryCount + 1);
+                    retryAddReport(report, imageFile, audioFile, callback, retryCount + 1);
                 } else {
                     callback.onFailure(context.getString(R.string.error_adding_report_after_multiple_retries) + t.getMessage());
                 }
@@ -145,17 +154,19 @@ public class ReportRemoteDataSource {
      * Retries adding a report to the API.
      *
      * @param report     The Report object to add.
-     * @param file       The file of the image.
+     * @param imageFile  The file of the image.
+     * @param audioFile The file of the audio.
      * @param callback   The callback to notify the result of the operation.
      * @param retryCount The current retry count.
      */
-    private void retryAddReport(Report report, File file, AddReportCallback callback, int retryCount) {
+    private void retryAddReport(Report report, File imageFile, File audioFile, AddReportCallback callback, int retryCount) {
 
         new android.os.Handler().postDelayed(() -> {
             Log.d(API_SUCCESS_TAG, "Retrying to add report... (Attempt " + (retryCount + 1) + ")");
-            addReportWithRetry(report, file, callback, retryCount);
+            addReportWithRetry(report, imageFile, audioFile, callback, retryCount);
         }, 3000); // Retry after 3 seconds
     }
+
     /**
      * Compresses the image file.
      *
