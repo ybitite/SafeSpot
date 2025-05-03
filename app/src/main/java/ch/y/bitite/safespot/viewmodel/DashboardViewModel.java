@@ -151,9 +151,12 @@ public class DashboardViewModel extends ViewModel {
 
         if (allReports != null) {
             for (ReportValidated report : allReports) {
-                if (report.getDescription().toLowerCase().contains(query.toLowerCase())) {
-                    filteredList.add(report);
+                if (report.getDescription() != null) {
+                    if (report.getDescription().toLowerCase().contains(query.toLowerCase())) {
+                        filteredList.add(report);
+                    }
                 }
+
             }
         }
         filteredReports.setValue(filteredList);
