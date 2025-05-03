@@ -29,7 +29,7 @@ import ch.y.bitite.safespot.model.ReportClusterItem;
 public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClusterItem> {
 
     private static final String TAG = "ReportRenderer";
-    private static final int MARKER_SIZE = 150;
+    private static final int MARKER_SIZE = 120;
     private static final int CLUSTER_RADIUS = 50;
     private static final int CLUSTER_OUTLINE_RADIUS = CLUSTER_RADIUS * 2;
     private static final int CLUSTER_SIZE = CLUSTER_OUTLINE_RADIUS * 2;
@@ -173,7 +173,7 @@ public class ReportClusterItemRenderer extends DefaultClusterRenderer<ReportClus
      */
     private int getClusterColor(int clusterSize) {
         if (clusterSize <= 5) {
-            return ContextCompat.getColor(context, R.color.green);
+            return ContextCompat.getColor(context, R.color.teal_500);
         } else if (clusterSize <= 10) {
             return ContextCompat.getColor(context, R.color.yellow);
         } else {
