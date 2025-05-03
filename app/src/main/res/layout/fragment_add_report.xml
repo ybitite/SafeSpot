@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Root layout for the add report fragment -->
-<!-- EditText for report description -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,119 +7,302 @@
     android:background="@color/teal_700"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:elevation="15dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="20dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
-
-            <EditText
-                android:id="@+id/editTextDescription"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:hint="@string/description"
-                android:inputType="textMultiLine"
-                android:maxLength="1000"
-                android:maxLines="7"
-                android:minLines="3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_margin="8dp"
+                android:elevation="15dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="20dp">
 
-            <!-- TextView to display longitude -->
-            <TextView
-                android:id="@+id/textViewLongitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/longitude"
-                android:textColor="@color/teal_700"
-                app:layout_constraintStart_toStartOf="@+id/editTextDescription"
-                app:layout_constraintTop_toBottomOf="@+id/editTextDescription" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
 
-            <!-- TextView to display latitude -->
-            <TextView
-                android:id="@+id/textViewLatitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/latitude"
-                android:textColor="@color/teal_700"
-                app:layout_constraintTop_toBottomOf="@+id/textViewLongitude"
-                tools:layout_editor_absoluteX="16dp" />
+                    <!-- Description Section -->
+                    <TextView
+                        android:id="@+id/textViewDescriptionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/description"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Button to add the report -->
+                    <RadioGroup
+                        android:id="@+id/descriptionRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewDescriptionTitle">
 
-            <!-- Button to cancel the report addition -->
+                        <RadioButton
+                            android:id="@+id/radioTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="@string/text_description" />
 
-            <!-- ImageView to display the selected image -->
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/image_report_description"
-                android:scaleType="centerInside"
-                android:src="@drawable/image_not_found"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewLatitude" />
+                        <RadioButton
+                            android:id="@+id/radioVoiceDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/voice_description" />
+                    </RadioGroup>
 
-            <!-- Button to add an image -->
-            <Button
-                android:id="@+id/buttonAddImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/teal_700"
-                android:text="upload"
-                app:cornerRadius="20dp"
-                app:layout_constraintStart_toStartOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                    <EditText
+                        android:id="@+id/editTextDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints=""
+                        android:background="@drawable/edit_text_border"
+                        android:hint="@string/description_hint"
+                        android:inputType="textMultiLine"
+                        android:maxLength="1000"
+                        android:maxLines="7"
+                        android:minLines="2"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/descriptionRadioGroup" />
 
-            <Button
-                android:id="@+id/buttonAddReport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/red"
-                android:text="add"
-                app:cornerRadius="20dp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                    <LinearLayout
+                        android:id="@+id/voiceMemoLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextDescription">
 
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/gray"
-                android:text="@string/cancel"
-                android:textColor="@color/white"
-                app:cornerRadius="20dp"
-                app:layout_constraintEnd_toStartOf="@+id/buttonAddReport"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                        <Button
+                            android:id="@+id/buttonRecord"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/record"
+                            app:cornerRadius="20dp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:id="@+id/textViewRecordingStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/not_recording" />
+                    </LinearLayout>
+
+                    <!-- Date and Time Section -->
+                    <TextView
+                        android:id="@+id/textViewDateTimeTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/date_time"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/voiceMemoLayout" />
+
+                    <TextView
+                        android:id="@+id/textViewDateTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/edit_text_border"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:hint="@string/current_date_time"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewDateTimeTitle" />
+
+                    <!-- Location Section -->
+                    <TextView
+                        android:id="@+id/textViewLocationTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/location"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewDateTime" />
+
+                    <RadioGroup
+                        android:id="@+id/locationRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewLocationTitle">
+
+                        <RadioButton
+                            android:id="@+id/radioCurrentLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="@string/current_location" />
+
+                        <RadioButton
+                            android:id="@+id/radioManualAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/manual_address" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:id="@+id/textViewCurrentAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_border"
+                        android:hint="@string/current_address"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@+id/locationRadioGroup"
+                        app:layout_constraintTop_toBottomOf="@+id/locationRadioGroup" />
+
+                    <LinearLayout
+                        android:id="@+id/manualAddressLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentAddress">
+
+                        <EditText
+                            android:id="@+id/editTextStreet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/street"
+                            android:inputType="textPostalAddress" />
+
+                        <EditText
+                            android:id="@+id/editTextNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/number"
+                            android:inputType="text" />
+
+                        <EditText
+                            android:id="@+id/editTextPostalCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/postal_code"
+                            android:inputType="number" />
+
+                        <EditText
+                            android:id="@+id/editTextCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/city"
+                            android:inputType="textPostalAddress" />
+                    </LinearLayout>
+
+                    <!-- Image Section -->
+                    <TextView
+                        android:id="@+id/textViewImageTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/image"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/manualAddressLayout" />
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/edit_text_border"
+                        android:contentDescription="@string/image_report_description"
+                        android:padding="2dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/image_not_found"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewImageTitle" />
+
+                    <Button
+                        android:id="@+id/buttonAddImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="@color/teal_700"
+                        android:text="@string/upload"
+                        android:visibility="gone"
+                        app:cornerRadius="20dp"
+                        app:layout_constraintStart_toStartOf="@+id/imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+                    <!-- Buttons Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="end"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/buttonAddImage">
+
+                        <Button
+                            android:id="@+id/buttonCancel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:backgroundTint="@color/gray"
+                            android:text="@string/cancel"
+                            android:textColor="@color/white"
+                            app:cornerRadius="20dp" />
+
+                        <Button
+                            android:id="@+id/buttonAddReport"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/red"
+                            android:text="@string/add"
+                            app:cornerRadius="20dp" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 
     <ImageView
         android:id="@+id/imageViewIcon"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:srcCompat="@drawable/emergency_icon" />
 </LinearLayout>
