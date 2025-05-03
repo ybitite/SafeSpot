@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -28,6 +29,10 @@ public class AddReportViewModel extends ViewModel {
     private final MutableLiveData<String> description = new MutableLiveData<>();
     private final MutableLiveData<LatLng> location = new MutableLiveData<>();
     private final MutableLiveData<Uri> imageUri = new MutableLiveData<>();
+    // New variable for the date and time
+    private final MutableLiveData<Date> dateTime = new MutableLiveData<>();
+    // New variable for the audio file path
+    private final MutableLiveData<String> audioFilePath = new MutableLiveData<>();
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>(null);
@@ -106,6 +111,42 @@ public class AddReportViewModel extends ViewModel {
     }
 
     /**
+     * Gets the audio file path LiveData.
+     *
+     * @return The audio file path LiveData.
+     */
+    public LiveData<String> getAudioFilePath() {
+        return audioFilePath;
+    }
+
+    /**
+     * Sets the audio file path.
+     *
+     * @param path The audio file path.
+     */
+    public void setAudioFilePath(String path) {
+        audioFilePath.setValue(path);
+    }
+
+    /**
+     * Gets the date and time LiveData.
+     *
+     * @return The date and time LiveData.
+     */
+    public LiveData<Date> getDateTime() {
+        return dateTime;
+    }
+
+    /**
+     * Sets the date and time.
+     *
+     * @param newDateTime The new date and time.
+     */
+    public void setDateTime(Date newDateTime) {
+        dateTime.setValue(newDateTime);
+    }
+
+    /**
      * Adds a new report.
      */
     public void addReport() {
@@ -118,13 +159,16 @@ public class AddReportViewModel extends ViewModel {
             reportLongitude = location.getValue().longitude;
             reportLatitude = location.getValue().latitude;
         }
-        Date reportDateTime = new Date();
+        // Get the date and time from the LiveData
+        Date reportDateTime = dateTime.getValue() != null ? dateTime.getValue() : new Date();
         String reportImage = imageUri.getValue() != null ? imageUri.getValue().toString() : "";
-        String reportVideo = "1";
+        // Get the audio file path
+        String reportAudio = audioFilePath.getValue() != null ? audioFilePath.getValue() : "";
+        File audioFile = audioFilePath.getValue() != null ? new File(audioFilePath.getValue()) : null;
 
-        Report report = new Report(reportLongitude, reportLatitude, reportDateTime, reportDescription, reportImage, reportVideo);
+        Report report = new Report(reportLongitude, reportLatitude, reportDateTime, reportDescription, reportImage, reportAudio);
 
-        repository.addReport(report, imageUri.getValue(), new ReportRepository.AddReportCallback() {
+        repository.addReport(report, imageUri.getValue(), audioFile, new ReportRepository.AddReportCallback() {
             @Override
             public void onSuccess(String message) {
                 isLoading.setValue(false);
