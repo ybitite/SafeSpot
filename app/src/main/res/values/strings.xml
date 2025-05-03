@@ -11,13 +11,43 @@
     <string name="longitude">Longitude</string>
     <string name="latitude">Latitude</string>
     <string name="date">Date</string>
+    <string name="current_location" translatable="false">Current Location</string>
+    <string name="manual_address" translatable="false">Manual Address</string>
+    <string name="street" translatable="false">Street</string>
+    <string name="number" translatable="false">Number</string>
+    <string name="postal_code" translatable="false">Postal Code</string>
+    <string name="city" translatable="false">City</string>
+    <string name="current_address" translatable="false">Turn on your location</string>
+
+    <string name="text_description" translatable="false">Text Description</string>
+    <string name="voice_description" translatable="false">Voice Description</string>
+    <string name="not_recording" translatable="false">Not Recording</string>
+    <string name="recording" translatable="false">Recording...</string>
+    <string name="recording_paused" translatable="false">Recording Paused</string>
+
+    <string name="permission_denied_record_audio" translatable="false">Permission to record audio denied</string>
+    <string name="permission_denied_read_media_images" translatable="false">Permission to read media images denied</string>
+
+    <string name="current_date_time" translatable="false">Current Date and Time</string>
+    <string name="pick_date_time" translatable="false">Pick Date and Time</string>
+
+    <string name="description_hint" translatable="false">Enter a description here</string>
+    <string name="date_time" translatable="false">Date and Time</string>
+    <string name="location" translatable="false">Location</string>
+    <string name="image" translatable="false">Image</string>
 
     <!-- Button Labels -->
+    <string name="add" translatable="false">ADD</string>
     <string name="add_report">Add Report</string>
-    <string name="cancel">Cancel</string>
-    <string name="refresh">Refresh</string>
     <string name="add_image">Add Image</string>
+    <string name="refresh">Refresh</string>
+    <string name="cancel">Cancel</string>
+    <string name="upload" translatable="false">Upload</string>
     <string name="center_map">Center Map</string>
+
+    <string name="stop" translatable="false">stop</string>
+    <string name="record" translatable="false">Record</string>
+
 
     <!-- Map Related Strings -->
     <string name="map_content_description">Map of validated reports</string>
@@ -34,8 +64,8 @@
     <string name="error_fetching_validated_reports">"Error fetching validated reports : "</string>
     <string name="report_added_successfully">Report added successfully !</string>
     <string name="msg_enable_location_services" translatable="false">Please enable your location services.</string>
-    <string name="add" translatable="false">ADD</string>
     <string name="sort_date" translatable="false">Date ▲ ▼</string>
     <string name="search_hint" translatable="false">Rechercher...</string>
     <string name="full_screen_image" translatable="false">full screen image</string>
+
 </resources>
