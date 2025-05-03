@@ -53,11 +53,11 @@ public class Report {
     private final String image;
 
     /**
-     * The URL or path to a video associated with the report.
-     * This field is serialized to JSON with the key "Video".
+     * The URL or path to an audio associated with the report.
+     * This field is serialized to JSON with the key "Audio".
      */
-    @SerializedName("Video")
-    private final String video;
+    @SerializedName("Audio")
+    private final String audio;
 
     /**
      * Constructs a new Report object.
@@ -67,9 +67,9 @@ public class Report {
      * @param dateTime    The date and time when the report was made.
      * @param description A description of the report.
      * @param image       The URL or path to an image associated with the report.
-     * @param video       The URL or path to a video associated with the report.
+     * @param audio       The URL or path to an audio associated with the report.
      */
-    public Report(double longitude, double latitude, Date dateTime, String description, String image, String video) {
+    public Report(double longitude, double latitude, Date dateTime, String description, String image, String audio) {
         this.longitude = longitude;
         this.latitude = latitude;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
@@ -77,7 +77,7 @@ public class Report {
         this.dateTimeUtc = dateFormat.format(dateTime);
         this.description = description;
         this.image = image;
-        this.video = video;
+        this.audio = audio;
     }
 
     /**
@@ -126,6 +126,15 @@ public class Report {
     }
 
     /**
+     * Gets the URL or path to the audio associated with the report.
+     *
+     * @return The audio URL or path.
+     */
+    public String getAudio() {
+        return audio;
+    }
+
+    /**
      * Returns a string representation of the Report object.
      * This method is overridden to provide a human-readable format of the report's data.
      *
@@ -140,7 +149,7 @@ public class Report {
                 ", dateTimeUtc='" + dateTimeUtc + '\'' +
                 ", description='" + description + '\'' +
                 ", image='" + image + '\'' +
-                ", video='" + video + '\'' +
+                ", audio='" + audio + '\'' +
                 '}';
     }
 }
