@@ -3,6 +3,7 @@ package ch.y.bitite.safespot.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
@@ -147,19 +149,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         mClusterManager.setRenderer(renderer);
         googleMap.setOnCameraIdleListener(mClusterManager);
 
+        // Apply custom map style
+        try {
+            // Load the JSON file from the raw folder
+            boolean success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            requireContext(), R.raw.style_google_map));
+
+            if (!success) {
+                Log.e("MapFragment", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("MapFragment", "Can't find style. Error: ", e);
+        }
         // Set the custom InfoWindowAdapter to the ClusterManager
         mClusterManager.getMarkerCollection().setInfoWindowAdapter(customInfoWindowAdapter);
 
         // Set listeners for info window clicks
         mClusterManager.setOnClusterItemInfoWindowClickListener(marker -> {
-            // Assuming 'marker' is a custom object that holds the image URL
-            // You need to replace this with how you get the URL from your marker object
             if (marker != null) {
-                String imageUrl = marker.getImageFileName(); // Replace getImageUrl() with the actual method to get the URL
+                String imageUrl = marker.getImageFileName();
 
                 // Get the context from the fragment or activity
-                Context context = getContext(); // If you are in a Fragment
-                // If you are in an Activity, you can use 'this' instead of 'getContext()'
+                Context context = getContext();
 
                 if (context != null) {
                     Intent intent = new Intent(context, FullScreenImageActivity.class);
