@@ -27,6 +27,7 @@ public interface ApiService {
      * Adds a new report.
      *
      * @param image       The image part of the report.
+     * @param audio       The audio part of the report.
      * @param description The description of the report.
      * @param longitude   The longitude of the report location.
      * @param latitude    The latitude of the report location.
@@ -37,6 +38,7 @@ public interface ApiService {
     @POST("api/reports")
     Call<Void> addReport(
             @Part MultipartBody.Part image,
+            @Part MultipartBody.Part audio,
             @Part("description") RequestBody description,
             @Part("longitude") RequestBody longitude,
             @Part("latitude") RequestBody latitude,
